@@ -1,0 +1,21 @@
+{
+    "model": {
+        "name": "model1",
+        "width": 1024, 
+        "height": 128,
+        "save": 1
+    },
+    "training": {
+        "epochs": 50,
+        "save_history": 1,
+        "batch_size": 16,
+        "tf_seed": 42,
+        "learning_rate": 0.001,
+        "patience": 5
+    },
+    "directory": {
+        "model_dir": "models",
+        "test_dir": "test_results",
+        "data_base_path": "data"
+    }
+}
