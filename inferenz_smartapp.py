@@ -8,8 +8,8 @@ import keras
 import preprocess
 
 MODEL_PATH = "models/model1"
-MODEL_WEIGHT_PATH = "models\model1\model1_weights.keras"
-MODEL_CHARS_PATH = "models\model1\handwriting_chars.pkl"
+MODEL_WEIGHT_PATH = "models/model1/model1_weights.keras"
+MODEL_CHARS_PATH = "models/model1/handwriting_chars.pkl"
 MODEL_IMAGE_WIDTH = 1024
 MODEL_IMAGE_HEIGHT = 128
 
@@ -31,8 +31,9 @@ class handwriting_model():
         if os.path.exists(model_path):
             print("Loading pre-trained model and weights...")
             model = load_model(model_path)
-            model.load_weights(model_weight_path)
-            print("Model and weights loaded successfully.")
+            if os.path.exists(model_weight_path):
+                model.load_weights(model_weight_path)
+                print("Model and weights loaded successfully.")
 
             return model
         else:
@@ -71,11 +72,11 @@ class handwriting_model():
         print(f"Prediction: {selected_pred_text}")
         return selected_pred_text
 
+model = handwriting_model()
 
 if __name__ == "__main__":
     IMAGE_PATH = "data/a01-000u-00.png"
     image = tf.io.read_file(IMAGE_PATH)
     image = tf.image.decode_png(image, 1)
-    model = handwriting_model()
     pred = model.inference(image)
     print(pred)

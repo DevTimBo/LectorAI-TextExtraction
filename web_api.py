@@ -2,12 +2,10 @@ from flask import Flask, request, jsonify
 from werkzeug.utils import secure_filename
 import uuid
 import os
-from inferenz_smartapp import handwriting_model
 import tensorflow as tf
+from inferenz_smartapp import model
 
 app = Flask(__name__)
-
-model = handwriting_model()
 
 directory = os.path.abspath("tempimages_api")
 

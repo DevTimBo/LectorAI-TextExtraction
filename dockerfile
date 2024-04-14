@@ -11,7 +11,7 @@ COPY . /app
 
 # Install Python dependencies
 RUN pip install --upgrade pip
-RUN pip install flask tensorflow==2.15 gunicorn opencv-python
+RUN pip install flask tensorflow==2.15 gunicorn
 
 # Make port 80 available to the world outside this container
 EXPOSE 80
