@@ -42,7 +42,7 @@ def process_image():
         filename = f"{uuid.uuid4()}.png"
         file.save(os.path.join(directory, filename))
 
-        image = tf.io.read_file(filename)
+        image = tf.io.read_file(os.path.join(directory, filename))
         image = tf.image.decode_png(image, 1)
 
         prediction = model.inference(image)
