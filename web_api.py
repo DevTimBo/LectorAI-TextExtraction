@@ -1,8 +1,6 @@
 from flask import Flask, request, jsonify
 from werkzeug.utils import secure_filename
 import uuid
-import cv2 as cv
-import numpy as np
 import os
 from inferenz_smartapp import handwriting_model
 import tensorflow as tf

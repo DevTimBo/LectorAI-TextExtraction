@@ -1,15 +1,8 @@
-FROM python:3.9.19-alpine3.19
+FROM ubuntu:latest
 
-# Install system dependencies for opencv
-RUN apt-get update && apt-get install -y \
-    libgl1-mesa-glx \
-    && rm -rf /var/lib/apt/lists/*
+RUN apt update
+RUN apt install python3 python3-pip -y
 
-# Install system dependencies for pyzbar
-RUN apt-get update && apt-get install -y \
-    libzbar0 \
-    && rm -rf /var/lib/apt/lists/*
-    
 # Set the working directory in the container
 WORKDIR /app
 
@@ -18,7 +11,7 @@ COPY . /app
 
 # Install Python dependencies
 RUN pip install --upgrade pip
-RUN pip install -r r.txt
+RUN pip install flask tensorflow==2.15 gunicorn opencv-python
 
 # Make port 80 available to the world outside this container
 EXPOSE 80
