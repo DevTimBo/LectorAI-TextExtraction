@@ -32,9 +32,8 @@ def process_image():
         return jsonify({"error": "No file part in the request"}), 400
 
     files = request.files.getlist('files')
-
+    predictions = []
     for file in files:
-        filename = secure_filename(file.filename)
         filename = f"{uuid.uuid4()}.png"
         file.save(os.path.join(directory, filename))
 
@@ -42,8 +41,8 @@ def process_image():
         image = tf.image.decode_png(image, 1)
 
         prediction = model.inference(image)
-
-    return jsonify({"prediction": prediction})
+        predictions.append(prediction)
+    return jsonify({"predictions":predictions})
 
 if __name__ == '__main__':
     app.run()

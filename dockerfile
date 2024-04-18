@@ -16,5 +16,5 @@ RUN pip install flask tensorflow==2.15 gunicorn
 # Make port 80 available to the world outside this container
 EXPOSE 80
 
-# Run app.py when the container launches
+# Run web_api.py when the container launches
 CMD ["gunicorn", "web_api:app", "-b", "0.0.0.0:80"]
