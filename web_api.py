@@ -46,7 +46,7 @@ def process_image():
 
         for box, cl, conf in zip(boxes, classes, confidences):
             print(conf)
-            if conf < 0.525:
+            if conf < 0.53:
                 continue
             try:
                 cropped_image = tf.image.crop_to_bounding_box(image, int(box[1]), int(box[0]), int(box[3]-box[1]), int(box[2]-box[0]))
@@ -55,7 +55,6 @@ def process_image():
                     "class": CLASSES[cl],
                     "prediction": prediction
                 })
-                predictions.append(prediction)
             except Exception as e:
                 print("Bad Box!")
     return jsonify({"predictions":predictions})
