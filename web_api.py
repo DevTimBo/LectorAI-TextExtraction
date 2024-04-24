@@ -3,7 +3,8 @@ from werkzeug.utils import secure_filename
 import uuid
 import os
 import tensorflow as tf
-from inferenz_smartapp import model
+from inferenz_smartapp import handwriting_model
+from inferenz_bbox import bbox_model, CLASSES
 
 app = Flask(__name__)
 
@@ -37,11 +38,26 @@ def process_image():
         filename = f"{uuid.uuid4()}.png"
         file.save(os.path.join(directory, filename))
 
+        boxes, confidences, classes = bbox_model.inference(os.path.join(directory, filename))
+
         image = tf.io.read_file(os.path.join(directory, filename))
         image = tf.image.decode_png(image, 1)
+        predictions = []
 
-        prediction = model.inference(image)
-        predictions.append(prediction)
+        for box, cl, conf in zip(boxes, classes, confidences):
+            print(conf)
+            if conf < 0.525:
+                continue
+            try:
+                cropped_image = tf.image.crop_to_bounding_box(image, int(box[1]), int(box[0]), int(box[3]-box[1]), int(box[2]-box[0]))
+                prediction = handwriting_model.inference(cropped_image)
+                predictions.append({
+                    "class": CLASSES[cl],
+                    "prediction": prediction
+                })
+                predictions.append(prediction)
+            except Exception as e:
+                print("Bad Box!")
     return jsonify({"predictions":predictions})
 
 if __name__ == '__main__':

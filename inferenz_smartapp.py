@@ -72,7 +72,7 @@ class handwriting_model():
         print(f"Prediction: {selected_pred_text}")
         return selected_pred_text
 
-model = handwriting_model()
+handwriting_model = handwriting_model()
 
 if __name__ == "__main__":
     IMAGE_PATH = "data/a01-000u-00.png"

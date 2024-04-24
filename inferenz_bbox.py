@@ -5,7 +5,27 @@ from collections import namedtuple
 import keras_cv
 import numpy as np
 
-NUM_CLASSES = 5
+
+CLASSES =[
+    "parent_first_name",
+    "parent_last_name",
+    "parent_email",
+    "parent_phone",
+
+    "child_first_name",
+    "child_last_name",
+    "child_class",
+
+    "address_street_and_number",
+    "address_zip",
+    "address_city",
+
+    "ag_1",
+    "ag_2",
+    "ag_3",
+]
+
+NUM_CLASSES = len(CLASSES)
 MODEL_WEIGHT_PATH = None
 MODEL_IMAGE_WIDTH = 1024
 MODEL_IMAGE_HEIGHT = 128
@@ -28,7 +48,7 @@ class bbox_model:
             load_weights=True 
         )
         model = keras_cv.models.YOLOV8Detector(
-            num_classes=5, 
+            num_classes=NUM_CLASSES, 
             bounding_box_format="xyxy",
             backbone=backbone,
             fpn_depth=1,
@@ -47,6 +67,7 @@ class bbox_model:
         classes = predictions['classes'][0]
         return boxes, confidence, classes
 
+bbox_model = bbox_model()
 
 if __name__ == "__main__":
     model = bbox_model()
