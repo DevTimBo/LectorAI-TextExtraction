@@ -46,7 +46,7 @@ def process_image():
 
         for box, cl, conf in zip(boxes, classes, confidences):
             print(conf)
-            if conf < 0.53:
+            if conf < 0.529:
                 continue
             try:
                 cropped_image = tf.image.crop_to_bounding_box(image, int(box[1]), int(box[0]), int(box[3]-box[1]), int(box[2]-box[0]))
