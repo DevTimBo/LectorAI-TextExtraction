@@ -19,10 +19,8 @@ max_len = 0 # Number of total characters used
 cwd = os.getcwd()
 last_part = os.path.basename(cwd)
 
-if last_part == "SmartApp-Project":
-    base_path = "data_zettel/cropped_images/"  # path for pipeline.py
-else:
-    base_path = "../data_zettel/cropped_images/"  # path for handwriting
+# Path to the dataset for transferlearning
+base_path = "dataset/dataset_training/handwriting_dataset/dataset"
 
 def read_data():
     """Reads image and label data from files.
