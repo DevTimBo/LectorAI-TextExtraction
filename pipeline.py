@@ -1,35 +1,40 @@
-from collections import namedtuple
+from flask import jsonify
+import os
+import tensorflow as tf
 from inferenz_smartapp import handwriting_model
-from inferenz_bbox import bbox_model
+from inferenz_bbox import bbox_model, CLASSES
 
 class pipeline:
     def __init__(self):
-        '''
-        Initialize the pipeline with the models. Unfinished!
-        Depending on how the bbox model class is built,
-        a lot of things dont have to be here
-        e.g cropping, preprocessing, etc. 
-        Exact Structure still needs to be discussed
-        
-        This class can then directly be used for the webapi.
-        '''
         self.bbox_model = bbox_model()
         self.handwriting_model = handwriting_model()
         
-    def predict_bounding_boxes(self, image):
+    def _predict_bounding_boxes(self, image):
         boxes = self.bbox_model.inference(image)
         return boxes
     
-    def predict_handwriting(self, image):
+    def _predict_handwriting(self, image):
         result = self.handwriting_model.inference(image)
         return result
     
-    def __call__(self, image):
-        # Predict bounding boxes and crop the text regions
-        cropped_images = self.predict_bounding_boxes(image)
-        
-        # Extract text from each bounding boxes
-        for image in cropped_images:
-            predictions = self.predict_handwriting(image)
-        
-        return predictions
+    def __call__(self, directory, filename):
+        boxes, confidences, classes = self._predict_bounding_boxes(os.path.join(directory, filename))
+
+        image = tf.io.read_file(os.path.join(directory, filename))
+        image = tf.image.decode_png(image, 1)
+        predictions = []
+
+        for box, cl, conf in zip(boxes, classes, confidences):
+            print(conf)
+            if conf < 0.529:
+                continue
+            try:
+                cropped_image = tf.image.crop_to_bounding_box(image, int(box[1]), int(box[0]), int(box[3]-box[1]), int(box[2]-box[0]))
+                prediction = self._predict_handwriting(cropped_image)
+                predictions.append({
+                    "class": CLASSES[cl],
+                    "prediction": prediction
+                })
+            except Exception as e:
+                print("Bad Box!")
+        return jsonify({"predictions":predictions})
