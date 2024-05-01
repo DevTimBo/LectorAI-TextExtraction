@@ -1,12 +1,12 @@
 {
     "model": {
-        "name": "model1",
+        "name": "transferlearner_2",
         "width": 1024, 
         "height": 128,
         "save": 1
     },
     "training": {
-        "epochs": 50,
+        "epochs": 100,
         "save_history": 1,
         "batch_size": 16,
         "tf_seed": 42,
