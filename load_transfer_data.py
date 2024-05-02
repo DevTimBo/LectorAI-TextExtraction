@@ -20,7 +20,7 @@ cwd = os.getcwd()
 last_part = os.path.basename(cwd)
 
 # Path to the dataset for transferlearning
-base_path = "dataset/dataset_training/handwriting_dataset/dataset"
+base_path = "dataset\dataset_training\handwriting_ohne_datum_unterschrift_dataset\handwriting_ohne_datum_dataset"
 
 def read_data():
     """Reads image and label data from files.
