@@ -3,6 +3,8 @@
 *.jpg
 *.jpeg
 
+# XML
+*.xml
 #Text
 *.txt
 
