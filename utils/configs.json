@@ -8,7 +8,7 @@
     "training": {
         "epochs": 100,
         "save_history": 1,
-        "batch_size": 4,
+        "batch_size": 16,
         "tf_seed": 42,
         "learning_rate": 0.001,
         "patience": 5
