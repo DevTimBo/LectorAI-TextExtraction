@@ -9,7 +9,7 @@
 *.txt
 
 runs
-/models/*
+/models/
 /data
 
 # Byte-compiled / optimized / DLL files
