@@ -8,6 +8,8 @@
 #Text
 *.txt
 
+runs
+/models/*
 /data
 
 # Byte-compiled / optimized / DLL files
