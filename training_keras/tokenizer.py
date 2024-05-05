@@ -11,16 +11,15 @@ import numpy as np
 
 AUTOTUNE = tf.data.AUTOTUNE
 
-# Load Data Transfer
-# import load_transfer_data as load_transfer_data
-# max_len = load_transfer_data.max_len
-# char_to_num = StringLookup(vocabulary=list(load_transfer_data.characters), mask_token=None)
-# num_to_char = StringLookup(vocabulary=char_to_num.get_vocabulary(), mask_token=None, invert=True)
-
-# # Load Data normal
+# Load Data
+import load_transfer_data 
 import load_data
-max_len = load_data.max_len
-char_to_num = StringLookup(vocabulary=list(load_data.characters), mask_token=None)
+max_len = max(load_transfer_data.max_len, load_data.max_len)
+
+chars = set(load_transfer_data.characters + load_data.characters)
+chars = sorted(list(chars))
+
+char_to_num = StringLookup(vocabulary=list(load_transfer_data.characters), mask_token=None)
 num_to_char = StringLookup(vocabulary=char_to_num.get_vocabulary(), mask_token=None, invert=True)
 
 img_size = (512, 32)  # default gets overwritten by config

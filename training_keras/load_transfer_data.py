@@ -45,8 +45,6 @@ def read_data(path):
         if os.path.exists(label_file):
             try:
                 with open(label_file, "r", encoding="utf-8") as file:
-                    print(image_name)
-
                     line = file.readline().strip()
             except UnicodeDecodeError as e:
                 print(e)
