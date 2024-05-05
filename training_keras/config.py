@@ -1,18 +1,16 @@
 # Model Parameter
 MODEL_SAVE = True
-MODEL_NAME = "Model9v3"
+MODEL_NAME = "Model9v3_Transfer"
 IMAGE_WIDTH = 1024
 IMAGE_HEIGHT = 128
 
 # Directory Parameter
-MODEL_DIR_NAME = "../models"
-TEST_RESULT_DIR_NAME = "../models"
-DATA_BASE_PATH = "../dataset/iam_dataset"
-
+MODEL_DIR_NAME = "../models/keras"
+TEST_RESULT_DIR_NAME = "../test_results"
 # Training Parameter
 SAVE_HISTORY = True
 EPOCHS = 100
-BATCH_SIZE = 16
+BATCH_SIZE = 24
 TF_SEED = 42
 LEARNING_RATE = 0.001
 PATIENCE = 5
