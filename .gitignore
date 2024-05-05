@@ -1,3 +1,9 @@
+#Env
+env
+venv
+myvenv
+myenv
+
 # Images
 *.png
 *.jpg
