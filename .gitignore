@@ -3,7 +3,8 @@ env
 venv
 myvenv
 myenv
-
+detected
+test_results
 # checkpoints
 */checkpoint*/
 

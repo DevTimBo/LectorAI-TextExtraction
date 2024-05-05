@@ -5,7 +5,7 @@ import pickle
 from keras.layers import StringLookup
 import tensorflow as tf
 import keras
-from training_keras import preprocess
+import preprocess
 
 MODEL_PATH = "models/keras/Model9v3_Transfer"
 MODEL_WEIGHT_PATH = "models/keras/Model9v3_Transfer/Model9v3_Transfer_weights.keras"
