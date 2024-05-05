@@ -3,8 +3,8 @@ from werkzeug.utils import secure_filename
 import uuid
 import os
 import tensorflow as tf
-from inferenz_smartapp import handwriting_model
-from inferenz_bbox import bbox_model, CLASSES
+from inference_smartapp import handwriting_model
+from inference_bbox import bbox_model, CLASSES
 from pipeline import pipeline
 
 app = Flask(__name__)

@@ -1,3 +1,13 @@
+#Env
+env
+venv
+myvenv
+myenv
+detected
+test_results
+# checkpoints
+*/checkpoint*/
+
 # Images
 *.png
 *.jpg
@@ -14,6 +24,9 @@ runs
 /checkpoint-1000
 /checkpoint-2000
 /checkpoint-3000
+models
+data
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

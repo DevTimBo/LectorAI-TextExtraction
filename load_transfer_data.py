@@ -9,9 +9,7 @@ Every other element stays independent.
 import numpy as np
 import os
 import tensorflow as tf
-
-np.random.seed(42)
-tf.random.set_seed(42)
+from config import TRANSFER_DATASET_PATH
 
 characters = set() # Set to contain unique characters
 max_len = 0 # Number of total characters used
@@ -20,7 +18,7 @@ cwd = os.getcwd()
 last_part = os.path.basename(cwd)
 
 # Path to the dataset for transferlearning
-base_path = 'dataset/dataset_training/'
+base_path = TRANSFER_DATASET_PATH
 train_dataset_path = os.path.join(base_path, 'train')
 val_dataset_path = os.path.join(base_path, 'val')
 
@@ -47,8 +45,6 @@ def read_data(path):
         if os.path.exists(label_file):
             try:
                 with open(label_file, "r", encoding="utf-8") as file:
-                    print(image_name)
-
                     line = file.readline().strip()
             except UnicodeDecodeError as e:
                 print(e)

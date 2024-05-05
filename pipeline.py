@@ -1,8 +1,8 @@
 from flask import jsonify
 import os
 import tensorflow as tf
-from inferenz_smartapp import handwriting_model
-from inferenz_bbox import bbox_model, CLASSES
+from inference_smartapp import handwriting_model
+from inference_bbox import bbox_model, CLASSES
 
 class pipeline:
     def __init__(self):

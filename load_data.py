@@ -5,13 +5,14 @@
 import numpy as np
 import os
 import tensorflow as tf
+from config import IAM_DATASET_PATH
 
 np.random.seed(42)
 tf.random.set_seed(42)
 
 characters = set()
 max_len = 0
-base_path = "./data"  # gets overwritten by config
+base_path = IAM_DATASET_PATH
 base_image_path = os.path.join(base_path, "lines")
 
 
