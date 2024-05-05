@@ -11,7 +11,9 @@
 runs
 /models/
 /data
-
+/checkpoint-1000
+/checkpoint-2000
+/checkpoint-3000
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

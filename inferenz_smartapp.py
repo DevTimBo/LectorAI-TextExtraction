@@ -77,5 +77,5 @@ if __name__ == "__main__":
     IMAGE_PATH = "data/a01-000u-00.png"
     image = tf.io.read_file(IMAGE_PATH)
     image = tf.image.decode_png(image, 1)
-    pred = model.inference(image)
+    pred = handwriting_model.inference(image)
     print(pred)

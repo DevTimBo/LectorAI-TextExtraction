@@ -1,6 +1,6 @@
 {
     "model": {
-        "name": "transferstudent_mafiaboss_same_dataset",
+        "name": "mafia_merger_acquisition",
         "width": 1024, 
         "height": 128,
         "save": 1
@@ -8,7 +8,7 @@
     "training": {
         "epochs": 100,
         "save_history": 1,
-        "batch_size": 32,
+        "batch_size": 16,
         "tf_seed": 42,
         "learning_rate": 0.001,
         "patience": 5

@@ -13,12 +13,13 @@ AUTOTUNE = tf.data.AUTOTUNE
 
 # Load Data Transfer
 import load_transfer_data as load_transfer_data
-max_len = load_transfer_data.max_len
-char_to_num = StringLookup(vocabulary=list(load_transfer_data.characters), mask_token=None)
+import load_data
+max_len = max(load_transfer_data.max_len, load_data.max_len)
+all_characters = set(load_transfer_data.characters + load_data.characters)
+char_to_num = StringLookup(vocabulary=list(sorted(all_characters)), mask_token=None)
 num_to_char = StringLookup(vocabulary=char_to_num.get_vocabulary(), mask_token=None, invert=True)
 
 # # Load Data normal
-#import load_data
 #max_len = load_data.max_len
 #char_to_num = StringLookup(vocabulary=list(load_data.characters), mask_token=None)
 #num_to_char = StringLookup(vocabulary=char_to_num.get_vocabulary(), mask_token=None, invert=True)
