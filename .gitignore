@@ -15,8 +15,8 @@ myenv
 *.txt
 
 runs
-/models
-/data
+models
+data
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
