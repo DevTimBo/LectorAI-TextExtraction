@@ -5,11 +5,11 @@ import pickle
 from keras.layers import StringLookup
 import tensorflow as tf
 import keras
-import preprocess
+from training_keras import preprocess
 
-MODEL_PATH = "models/transferstudent_mafiaboss_ohne_datum"
-MODEL_WEIGHT_PATH = "models/transferstudent_mafiaboss_ohne_datum/transferstudent_mafiaboss_ohne_datum_weights.keras"
-MODEL_CHARS_PATH = "models/transferstudent_mafiaboss_ohne_datum/handwriting_chars.pkl"
+MODEL_PATH = "models/keras/Model9v3_Transfer"
+MODEL_WEIGHT_PATH = "models/keras/Model9v3_Transfer/Model9v3_Transfer_weights.keras"
+MODEL_CHARS_PATH = os.path.join(MODEL_PATH, "handwriting_chars.pkl")
 MODEL_IMAGE_WIDTH = 1024
 MODEL_IMAGE_HEIGHT = 128
 
