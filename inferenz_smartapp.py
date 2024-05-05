@@ -7,9 +7,9 @@ import tensorflow as tf
 import keras
 import preprocess
 
-MODEL_PATH = "models/model1"
-MODEL_WEIGHT_PATH = "models/model1/model1_weights.keras"
-MODEL_CHARS_PATH = "models/model1/handwriting_chars.pkl"
+MODEL_PATH = "models/transferstudent_mafiaboss_ohne_datum"
+MODEL_WEIGHT_PATH = "models/transferstudent_mafiaboss_ohne_datum/transferstudent_mafiaboss_ohne_datum_weights.keras"
+MODEL_CHARS_PATH = "models/transferstudent_mafiaboss_ohne_datum/handwriting_chars.pkl"
 MODEL_IMAGE_WIDTH = 1024
 MODEL_IMAGE_HEIGHT = 128
 
@@ -69,7 +69,6 @@ class handwriting_model():
         pred_texts = self.decode_single_prediction(preds)
 
         selected_pred_text = pred_texts.replace("|"," ")
-        print(f"Prediction: {selected_pred_text}")
         return selected_pred_text
 
 handwriting_model = handwriting_model()

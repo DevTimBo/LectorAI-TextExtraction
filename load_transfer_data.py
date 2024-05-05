@@ -20,9 +20,11 @@ cwd = os.getcwd()
 last_part = os.path.basename(cwd)
 
 # Path to the dataset for transferlearning
-base_path = "dataset\dataset_training\handwriting_ohne_datum_unterschrift_dataset\handwriting_ohne_datum_dataset"
+base_path = 'dataset/dataset_training/'
+train_dataset_path = os.path.join(base_path, 'train')
+val_dataset_path = os.path.join(base_path, 'val')
 
-def read_data():
+def read_data(path):
     """Reads image and label data from files.
 
     This function reads image and label data from files stored in a specified directory.
@@ -34,13 +36,13 @@ def read_data():
         A list of tuples, where each tuple contains the file path to an image and its label.
     """
     data_list = []
-    image_files = [f for f in os.listdir(base_path) if f.endswith('.jpg')]
+    image_files = [f for f in os.listdir(path) if f.endswith('.jpg')]
 
     for image_file in image_files:
         image_name = os.path.splitext(image_file)[0]
 
-        img_path = os.path.join(base_path, image_file)
-        label_file = os.path.join(base_path, f"{image_name}.txt")
+        img_path = os.path.join(path, image_file)
+        label_file = os.path.join(path, f"{image_name}.txt")
 
         if os.path.exists(label_file):
             try:
@@ -73,9 +75,8 @@ def split_data(lines_list):
     test_samples = lines_list[split_idx:]
 
     val_split_idx = int(0.5 * len(test_samples))
-    validation_samples = test_samples[:val_split_idx]
-    test_samples = test_samples[val_split_idx:]
-
+    validation_samples = test_samples
+    test_samples = []
     return train_samples, test_samples, validation_samples
 
 
@@ -129,32 +130,26 @@ def get_vocabulary_length(data):
     return characters, max_len
 
 
-data = read_data()
-all_data = read_data()
+train_data = read_data(train_dataset_path)
+val_data = read_data(val_dataset_path)
+all_data = train_data + val_data
 characters, max_len = get_vocabulary_length(all_data)
-train_samples, test_samples, validation_samples = split_data(data)
 
 # Some utility functions
 def print_samples():
-    print(f"Total train samples: {len(train_samples)}")
-    print(f"Total validation samples: {len(validation_samples)}")
-    print(f"Total test samples: {len(test_samples)}")
+    print(f"Total train samples: {len(train_data)}")
+    print(f"Total validation samples: {len(val_data)}")
     
 def get_train_data():
     
-    train_path, train_label = get_image_paths_and_labels(train_samples)
+    train_path, train_label = get_image_paths_and_labels(train_data)
     
     return train_path, train_label
 
 def get_validation_data():
     
-    val_path, val_label = get_image_paths_and_labels(validation_samples)
+    val_path, val_label = get_image_paths_and_labels(val_data)
     
     return val_path, val_label
 
-def get_test_data():
-    
-    test_path, test_label = get_image_paths_and_labels(test_samples)
-    
-    return test_path, test_label
     
