@@ -4,6 +4,9 @@ venv
 myvenv
 myenv
 
+# checkpoints
+*/checkpoint*/
+
 # Images
 *.png
 *.jpg
