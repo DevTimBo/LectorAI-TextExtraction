@@ -1,6 +1,6 @@
 # Model Parameter
 MODEL_SAVE = True
-MODEL_NAME = "Model9v4_LR_dataAug1"
+MODEL_NAME = "Model9v3_whitebq_aug_onlydense_transfer"
 IMAGE_WIDTH = 1024
 IMAGE_HEIGHT = 128
 

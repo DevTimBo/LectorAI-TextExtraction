@@ -935,14 +935,14 @@ def build_model9v4(img_width, img_height, char, lr_value):
     x = keras.layers.Conv2D(48, (3, 3), activation="relu", kernel_initializer="he_normal", padding="same", name="Conv3")(x)
     x = keras.layers.Conv2D(96, (3, 3), activation="relu", kernel_initializer="he_normal", padding="same", name="Conv4")(x)
     x = keras.layers.MaxPooling2D((2, 2), name="pool2")(x)
-    x = keras.layers.Dropout(0.5)(x) # from 0.2 to 0.5 
+    x = keras.layers.Dropout(0.25)(x) # from 0.2 to 0.5 
     
     new_shape = ((img_width // 4), (img_height // 4) * 96)
     x = keras.layers.Reshape(target_shape=new_shape, name="reshape")(x)
     x = keras.layers.Dense(128, activation="relu", name="dense1")(x)
-    x = keras.layers.Dropout(0.2)(x)
+    x = keras.layers.Dropout(0.25)(x)
                                 
-    x = keras.layers.Bidirectional(keras.layers.GRU(256, return_sequences=True, dropout=0.25))(x)
+    x = keras.layers.Bidirectional(keras.layers.GRU(128, return_sequences=True, dropout=0.25))(x)
     x = keras.layers.Bidirectional(keras.layers.GRU(128, return_sequences=True, dropout=0.25))(x)
 
     x = keras.layers.Dense(char + 2, activation="softmax", name="dense2")(x)
