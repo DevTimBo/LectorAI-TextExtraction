@@ -1,6 +1,6 @@
 # Model Parameter
 MODEL_SAVE = True
-MODEL_NAME = "Model9v3_LR"
+MODEL_NAME = "Model9v4_LR_dataAug1"
 IMAGE_WIDTH = 1024
 IMAGE_HEIGHT = 128
 

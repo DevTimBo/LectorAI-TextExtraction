@@ -69,12 +69,24 @@ def prepare_augmented_dataset(image_paths, labels, batch_size_new):
         num_parallel_calls=AUTOTUNE
     )
 
-    data_augmentation = tf.keras.Sequential([
+    data_augmentation1 = tf.keras.Sequential([
         tf.keras.layers.RandomContrast(0.25, seed=42),
         tf.keras.layers.RandomBrightness(0.25, value_range=(0, 1), seed=42)
     ])
+    data_augmentation2 = tf.keras.Sequential([
+        tf.keras.layers.RandomContrast(0.25, seed=42),
+        tf.keras.layers.RandomBrightness(0.25, value_range=(0, 1), seed=42),
+        tf.keras.layers.RandomZoom((0.1, 0.2), seed=42),
+    ])
+    data_augmentation3= tf.keras.Sequential([
+        tf.keras.layers.RandomContrast(0.25, seed=42),
+        tf.keras.layers.RandomBrightness(0.25, value_range=(0, 1), seed=42),
+        tf.keras.layers.RandomZoom((0, 0.1), seed=42, fill_mode='constant', fill_value=255),
+        tf.keras.layers.RandomTranslation(height_factor=(0, 0.01), width_factor=(0, 0.01), seed=42, fill_mode='constant', fill_value=255),
+        tf.keras.layers.RandomRotation(0.005, seed=42)
+    ])
     # Apply Augmentation
-    dataset = dataset.map(lambda x, y: (data_augmentation(x, training=True), y), num_parallel_calls=AUTOTUNE)
+    dataset = dataset.map(lambda x, y: (data_augmentation1(x, training=True), y), num_parallel_calls=AUTOTUNE)
 
     # Separate image and label
     dataset = dataset.map(lambda x, y: {"image": x, "label": y}, num_parallel_calls=AUTOTUNE)

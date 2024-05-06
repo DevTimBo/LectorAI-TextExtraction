@@ -43,6 +43,7 @@ def distortion_free_resize(image, img_size):
             [pad_width_left, pad_width_right],
             [0, 0],
         ],
+        constant_values=255,
     )
 
     image = tf.transpose(image, perm=[1, 0, 2])
