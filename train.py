@@ -60,15 +60,15 @@ def main():
             layer.trainable = True
         else:
             layer.trainable = False
-    prediction_model, transfer_history1 = train_model(model)
+    prediction_model, transfer_history1 = train_model(model, aug_train_ds, val_ds)
     ## Phase 2 - Full Training
     for layer in model.layers:
         layer.trainable = True
     ## Phase 3 - Lower Learning Rate
-    prediction_model, transfer_history2 = train_model(model)
+    prediction_model, transfer_history2 = train_model(model, aug_train_ds, val_ds)
     opt = keras.optimizers.Adam(LEARNING_RATE/10)
     model.compile(optimizer=opt)
-    prediction_model, transfer_history3 = train_model(model)
+    prediction_model, transfer_history3 = train_model(model, aug_train_ds, val_ds)
     total_duration = time.time() - start_time
     history = combine_n_histories(iam_history1, iam_history2, transfer_history1, transfer_history2, transfer_history3)
 
