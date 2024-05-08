@@ -7,7 +7,7 @@ detected
 test_results
 # checkpoints
 */checkpoint*/
-
+#/dataset/iam_dataset
 # Images
 *.png
 *.jpg
@@ -149,3 +149,4 @@ cython_debug/
 # pyinstaller
 build/
 dist/
+dataset/iam_dataset/words.zip

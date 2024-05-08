@@ -5,7 +5,7 @@
 import numpy as np
 import os
 import tensorflow as tf
-from config import IAM_DATASET_PATH
+from config import IAM_DATASET_PATH, WHAT_DATASET
 
 np.random.seed(42)
 tf.random.set_seed(42)
@@ -13,13 +13,14 @@ tf.random.set_seed(42)
 characters = set()
 max_len = 0
 base_path = IAM_DATASET_PATH
-base_image_path = os.path.join(base_path, "lines")
+what_dataset = WHAT_DATASET
+base_image_path = os.path.join(base_path, what_dataset)
 
 
 def read_data():
     lines_list = []
     # Read the file with UTF-8 encoding
-    with open(f"{base_path}/lines.txt", "r", encoding="utf-8") as file:
+    with open(f"{base_path}/{what_dataset}.txt", "r", encoding="utf-8") as file:
         words = file.readlines()
     for line in words:
         if line[0] == "#":
