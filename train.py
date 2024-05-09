@@ -98,7 +98,9 @@ def main():
         with open(os.path.join(model_path, f"{MODEL_NAME}.json"),'w') as f:
             f.write(json_string)
 
-        data_to_save = (load_data.max_len, load_data.characters)
+        max_len = tokenizer.max_len
+        chars = load_transfer_data.characters
+        data_to_save = (max_len, chars)
        
         with open(os.path.join(model_path, "handwriting_chars.pkl"), 'wb') as file:
             pickle.dump(data_to_save, file)

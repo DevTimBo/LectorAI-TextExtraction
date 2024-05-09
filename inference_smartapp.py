@@ -7,8 +7,8 @@ import tensorflow as tf
 import keras
 import preprocess
 
-MODEL_PATH = "models/keras/Model9v3_whitebq_aug_transfer"
-MODEL_WEIGHT_PATH = "models/keras/Model9v3_whitebq_aug_transfer/Model9v3_whitebq_aug_transfer_weights.keras"
+MODEL_PATH = "models/keras/Model9v3_Words_Transfer"
+MODEL_WEIGHT_PATH = "models/keras/Model9v3_Words_Transfer/Model9v3_Words_Transfer_weights.keras"
 MODEL_CHARS_PATH = os.path.join(MODEL_PATH, "handwriting_chars.pkl")
 MODEL_IMAGE_WIDTH = 1024
 MODEL_IMAGE_HEIGHT = 128
