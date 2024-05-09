@@ -1,7 +1,6 @@
 #Own Imports
 import load_data
 import load_transfer_data
-import tokenizer
 import models
 #Imports
 import tensorflow as tf
@@ -18,6 +17,8 @@ from config import *
 import pickle
 iam_history1, iam_history2, transfer_history1, transfer_history2, transfer_history3 = None, None, None, None, None 
 
+tokenizer = None
+
 def main():
     load_data.print_samples(IAM_DATASET_PATH)
     x_train_img_paths, y_train_labels = load_data.get_train_data()
@@ -26,22 +27,24 @@ def main():
 
     x_train_transfer_img_paths, y_train_transfer_labels = load_transfer_data.get_train_data()
     x_val_transfer_img_paths, y_val_transfer_labels = load_transfer_data.get_validation_data()
-    
+    # Tokenizer
+    global tokenizer
+    import tokenizer
     #train_ds = tokenizer.prepare_dataset(x_train_img_paths, y_train_labels, (IMAGE_WIDTH,IMAGE_HEIGHT),BATCH_SIZE)
     val_ds = tokenizer.prepare_dataset(x_val_img_paths, y_val_labels,(IMAGE_WIDTH,IMAGE_HEIGHT),BATCH_SIZE)
     test_ds = tokenizer.prepare_dataset(x_test_img_paths, y_test_labels,(IMAGE_WIDTH,IMAGE_HEIGHT),BATCH_SIZE)
     aug_train_ds = tokenizer.prepare_augmented_dataset(x_train_img_paths, y_train_labels, BATCH_SIZE)
     char = len(tokenizer.char_to_num.get_vocabulary())
-
+    
     # IAM Training
     ## Phase 1
     start_time = time.time()
-    model = models.build_model9v4(IMAGE_WIDTH, IMAGE_HEIGHT, char, LEARNING_RATE)
+    model = models.build_model9v3_xl(IMAGE_WIDTH, IMAGE_HEIGHT, char, LEARNING_RATE)
     prediction_model, iam_history1 = train_model(model, aug_train_ds, val_ds)
     ## Phase 2 - Lower Learning Rate
-    opt = keras.optimizers.Adam(LEARNING_RATE/10)
-    model.compile(optimizer=opt)
-    prediction_model, iam_history2 = train_model(model, aug_train_ds, val_ds)
+    # opt = keras.optimizers.Adam(LEARNING_RATE/10)
+    # model.compile(optimizer=opt)
+    # prediction_model, iam_history2 = train_model(model, aug_train_ds, val_ds)
 
     # Delete old datasets of memory
     del aug_train_ds
@@ -99,7 +102,7 @@ def main():
             f.write(json_string)
 
         max_len = tokenizer.max_len
-        chars = load_transfer_data.characters
+        chars = tokenizer.characters
         data_to_save = (max_len, chars)
        
         with open(os.path.join(model_path, "handwriting_chars.pkl"), 'wb') as file:
@@ -166,7 +169,7 @@ def create_dir(path_to_dir):
 
 def decode_batch_predictions(pred):
     input_len = np.ones(pred.shape[0]) * pred.shape[1]
-    results = keras.backend.ctc_decode(pred, input_length=input_len, greedy=True)[0][0][:, :load_data.max_len]
+    results = keras.backend.ctc_decode(pred, input_length=input_len, greedy=True)[0][0][:, :tokenizer.max_len]
     # Iterate over the results and get back the text.
     output_text = []
     for res in results:
