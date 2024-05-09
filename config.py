@@ -9,7 +9,7 @@ MODEL_DIR_NAME = "models/keras"
 # Training Parameter
 SAVE_HISTORY = True
 EPOCHS = 100
-BATCH_SIZE = 4
+BATCH_SIZE = 64
 TF_SEED = 42
 LEARNING_RATE = 0.001
 PATIENCE = 5
