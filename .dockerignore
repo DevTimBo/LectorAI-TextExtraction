@@ -1,0 +1,8 @@
+dataset
+.git
+*.pyc
+*.pyo
+*.pyd
+__pycache__
+tmp/
+env
