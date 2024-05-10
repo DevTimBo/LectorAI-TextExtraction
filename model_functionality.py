@@ -76,12 +76,13 @@ def save_model(
 
 
 def save_train_history(
+    prediction_model,
     history,
+    val_ds,
     model_name: str = MODEL_NAME,
     test_result_directory: str = "test_results",
     total_duration: int = 0,
     add_name: str = None,
-    prediction_model: tf.keras.Model = None,
 ):
     """Author: Alexej Kravtschenko (main) and Tim Harmling (wrote)
 
@@ -121,10 +122,10 @@ def save_train_history(
     if files_with_model_name:
         new_name = create_new_plot_name(model_name, files_with_model_name, NAME)
         plot_history(history, new_name, test_result_directory, True)
-        plot_evaluation(new_name, test_result_directory, True, prediction_model)
+        plot_evaluation(prediction_model, new_name, test_result_directory, True, val_ds)
     else:
         plot_history(history, NAME, test_result_directory, True)
-        plot_evaluation(NAME, test_result_directory, True, prediction_model)
+        plot_evaluation(prediction_model, NAME, test_result_directory, True, val_ds)
 
 
 def create_new_plot_name(model_name, names, format):
@@ -183,11 +184,12 @@ def plot_history(history, name, dir_path, save_fig):
         path = os.path.join(dir_path, f"{name}_history.png")
         plt.savefig(path)
 
-    plt.show()
+    if HYPERPARAMETER_TUNE is False:
+        plt.show()
 
 
 def plot_evaluation(
-    name, dir_path, save_fig, val_ds: tf.data.Dataset, prediction_model: tf.keras.Model
+    prediction_model, name, dir_path, save_fig, val_ds: tf.data.Dataset
 ):
     for batch in val_ds.take(1):
         batch_images = batch["image"]
@@ -210,8 +212,9 @@ def plot_evaluation(
     if save_fig:
         path = os.path.join(dir_path, f"{name}_result.png")
         plt.savefig(path)
-
-    plt.show()
+        
+    if HYPERPARAMETER_TUNE is False:
+        plt.show()
 
 
 def create_dir(path_to_dir: str):
