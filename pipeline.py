@@ -37,33 +37,15 @@ class pipeline:
             except Exception as e:
                 print("Bad Box!")
 
-        predictions.append({
-                    "class": CLASSES[1],
-                    "prediction": "Klasse1"
-                })
-        predictions.append({
-                    "class": CLASSES[2],
-                    "prediction": "Klasse2"
-                })
-        predictions.append({
-                    "class": CLASSES[3],
-                    "prediction": "Klasse3"
-                })
-        predictions.append({
-                    "class": CLASSES[4],
-                    "prediction": "Klasse4"
-                })
-        predictions.append({
-                    "class": CLASSES[5],
-                    "prediction": "Klasse5"
-                })
-        predictions.append({
-                    "class": CLASSES[6],
-                    "prediction": "Klasse6"
-                })
-        predictions.append({
-                    "class": CLASSES[7],
-                    "prediction": "Klasse7"
-                })
-        
+        predictions.extend(
+            (
+                {"class": CLASSES[1], "prediction": "Klasse1"},
+                {"class": CLASSES[2], "prediction": "Klasse2"},
+                {"class": CLASSES[3], "prediction": "Klasse3"},
+                {"class": CLASSES[4], "prediction": "Klasse4"},
+                {"class": CLASSES[5], "prediction": "Klasse5"},
+                {"class": CLASSES[6], "prediction": "Klasse6"},
+                {"class": CLASSES[7], "prediction": "Klasse7"},
+            )
+        )
         return jsonify({"predictions":predictions})

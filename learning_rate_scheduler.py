@@ -2,7 +2,7 @@ import tensorflow as tf
 
 class lr_scheduler:
 
-    def __init__(self, initial_learning_rate, decay_steps, name):
+    def __init__(self, initial_learning_rate: float = 0.001, decay_steps: int = 10000, name: str = "cosine_decay"):
         self.initial_learning_rate = initial_learning_rate
         self.decay_steps = decay_steps
         self.name = name
@@ -21,12 +21,15 @@ class lr_scheduler:
         elif self.name == "exponential_decay":
             return tf.keras.optimizers.schedules.ExponentialDecay(
                 initial_learning_rate=self.initial_learning_rate,
-                decay_steps=self.decay_steps
+                decay_steps=self.decay_steps,
+                decay_rate=self.initial_learning_rate/100,
+                staircase=True
                 )
         elif self.name == "inverse_time_decay":
             return tf.keras.optimizers.schedules.InverseTimeDecay(
                 initial_learning_rate=self.initial_learning_rate,
-                decay_steps=self.decay_steps
+                decay_steps=self.decay_steps,
+                decay_rate=self.initial_learning_rate/100
                 )
         elif self.name == "polynomial_decay":
             return tf.keras.optimizers.schedules.PolynomialDecay(
