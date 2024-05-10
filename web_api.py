@@ -1,10 +1,6 @@
 from flask import Flask, request, jsonify
-from werkzeug.utils import secure_filename
 import uuid
 import os
-import tensorflow as tf
-from inference_smartapp import handwriting_model
-from inference_bbox import bbox_model, CLASSES
 from pipeline import pipeline
 
 app = Flask(__name__)
@@ -34,12 +30,10 @@ def process_image():
         return jsonify({"error": "No file part in the request"}), 400
 
     files = request.files.getlist('files')
-    predictions = []
     for file in files:
         filename = f"{uuid.uuid4()}.png"
         file.save(os.path.join(directory, filename))
-        result = pipeline()(directory, filename)
-        return result
+        return pipeline()(directory, filename)
 
 if __name__ == '__main__':
     app.run()

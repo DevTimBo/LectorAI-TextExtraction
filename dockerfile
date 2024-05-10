@@ -1,7 +1,4 @@
-FROM ubuntu:latest
-
-RUN apt update
-RUN apt install python3 python3-pip -y
+FROM python:3.10.14-bullseye
 
 # Set the working directory in the container
 WORKDIR /app
@@ -9,9 +6,14 @@ WORKDIR /app
 # Copy the current directory contents into the container at /app
 COPY . /app
 
+# Install system dependencies for opencv
+RUN apt-get update && apt-get install -y \
+    libgl1-mesa-glx \
+    && rm -rf /var/lib/apt/lists/*
+
 # Install Python dependencies
 RUN pip install --upgrade pip
-RUN pip install flask tensorflow==2.15 gunicorn
+RUN pip install flask tensorflow==2.15 gunicorn opencv-python keras_cv
 
 # Make port 80 available to the world outside this container
 EXPOSE 80

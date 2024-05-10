@@ -151,3 +151,4 @@ cython_debug/
 build/
 dist/
 dataset/iam_dataset/words.zip
+ki_pipeline.tar

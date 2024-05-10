@@ -1,7 +1,4 @@
-import matplotlib.pyplot as plt
 import cv2
-import os
-from collections import namedtuple
 import keras_cv
 import numpy as np
 

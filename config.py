@@ -1,6 +1,6 @@
 # Model Parameter
 MODEL_SAVE = True
-MODEL_NAME = "Model9v3XL_Words_Transfer"
+MODEL_NAME = "Supreme_Leader"
 IMAGE_WIDTH = 1024
 IMAGE_HEIGHT = 128
 
@@ -16,5 +16,5 @@ PATIENCE = 5
 
 # Data Parameter
 IAM_DATASET_PATH = "dataset/iam_dataset"
-WHAT_DATASET = "words"
+WHAT_DATASET = "lines"
 TRANSFER_DATASET_PATH = "dataset/transfer_dataset"
