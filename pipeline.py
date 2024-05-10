@@ -10,12 +10,10 @@ class pipeline:
         self.handwriting_model = handwriting_model()
         
     def _predict_bounding_boxes(self, image):
-        boxes = self.bbox_model.inference(image)
-        return boxes
+        return self.bbox_model.inference(image)
     
     def _predict_handwriting(self, image):
-        result = self.handwriting_model.inference(image)
-        return result
+        return self.handwriting_model.inference(image)
     
     def __call__(self, directory, filename):
         boxes, confidences, classes = self._predict_bounding_boxes(os.path.join(directory, filename))
