@@ -57,21 +57,21 @@ def build_supreme_leader(img_width, img_height, char, lr_value):
     x = keras.layers.Conv2D(64, (3, 3), activation="relu", kernel_initializer=initializer, padding="same", name="Conv2")(x)
     x = keras.layers.Conv2D(96, (3, 3), activation="relu", kernel_initializer=initializer, padding="same", name="Conv3")(x)
     x = keras.layers.Conv2D(128, (3, 3), activation="relu", kernel_initializer=initializer, padding="same", name="Conv4")(x)
-    x = keras.layers.BatchNormalization(synchronized = True)(x)
+    x = keras.layers.BatchNormalization()(x)#(synchronized = True)(x)
     x = keras.layers.Dropout(0.2)(x)
     x = keras.layers.MaxPooling2D((2, 2), name="pool1")(x)
     x = keras.layers.Conv2D(32, (3, 3), activation="relu", kernel_initializer=initializer, padding="same", name="Conv5")(x)
     x = keras.layers.Conv2D(48, (3, 3), activation="relu", kernel_initializer=initializer, padding="same", name="Conv6")(x)
     x = keras.layers.Conv2D(64, (3, 3), activation="relu", kernel_initializer=initializer, padding="same", name="Conv7")(x)
     x = keras.layers.Conv2D(96, (3, 3), activation="relu", kernel_initializer=initializer, padding="same", name="Conv8")(x)
-    x = keras.layers.BatchNormalization(synchronized = True)(x)
+    x = keras.layers.BatchNormalization()(x)#(synchronized = True)(x)
     x = keras.layers.Dropout(0.3)(x)
     x = keras.layers.MaxPooling2D((2, 2), name="pool2")(x)
     x = keras.layers.Conv2D(16, (3, 3), activation="relu", kernel_initializer=initializer, padding="same", name="Conv9")(x)
     x = keras.layers.Conv2D(32, (3, 3), activation="relu", kernel_initializer=initializer, padding="same", name="Conv10")(x)
     x = keras.layers.Conv2D(48, (3, 3), activation="relu", kernel_initializer=initializer, padding="same", name="Conv11")(x)
     x = keras.layers.Conv2D(64, (3, 3), activation="relu", kernel_initializer=initializer, padding="same", name="Conv12")(x)
-    x = keras.layers.BatchNormalization(synchronized = True)(x)
+    x = keras.layers.BatchNormalization()(x)#(synchronized = True)(x)
     x = keras.layers.Dropout(0.4)(x)
     
     new_shape = ((img_width // 4), (img_height // 4) * 64)
@@ -86,6 +86,9 @@ def build_supreme_leader(img_width, img_height, char, lr_value):
     output = CTCLayer(name="ctc_loss")(labels, x)
 
     model = keras.models.Model(inputs=[input_img, labels], outputs=output, name="handwriting_recognizer")
+    
+    opt = keras.optimizers.Adam(lr_value)
+    model.compile(optimizer=opt)
     
     return model
 
@@ -107,19 +110,18 @@ def build_napoleon_bonapetite(img_width, img_height, char, lr_value):
     input_img = keras.Input(shape=(img_width, img_height, 1), name="image")
     labels = keras.layers.Input(name="label", shape=(None,))
     
-    x = keras.layers.Conv2D(64, (3, 3), activation="relu", kernel_initializer=initializer, padding="same", name="Conv1")(input_img)
-    x = keras.layers.BatchNormalization(synchronized = True)(x)
-    x = keras.layers.Conv2D(32, (3, 3), strides=(2, 2), activation="relu", kernel_initializer=initializer, padding="same", name="Conv2")(x)
-    x = keras.layers.Conv2D(64, (3, 3), activation="relu", kernel_initializer=initializer, padding="same", name="Conv3")(x)
-    x = keras.layers.BatchNormalization(synchronized = True)(x)
-    x = keras.layers.Conv2D(32, (3, 3), strides=(2, 2), activation="relu", kernel_initializer=initializer, padding="same", name="Conv4")(x)
-    x = keras.layers.Conv2D(64, (3, 3), activation="relu", kernel_initializer=initializer, padding="same", name="Conv5")(x)
-    x = keras.layers.BatchNormalization(synchronized = True)(x)
-    x = keras.layers.Conv2D(32, (3, 3), activation="relu", kernel_initializer=initializer, padding="same", name="Conv6")(x)
-    
+    x = keras.layers.Conv2D(96, (3, 3), activation="relu", kernel_initializer=initializer, padding="same", name="Conv1")(input_img)
+    x = keras.layers.BatchNormalization()(x)#(synchronized = True)(x)
+    x = keras.layers.Conv2D(48, (3, 3), strides=(2, 2), activation="relu", kernel_initializer=initializer, padding="same", name="Conv2")(x)
+    x = keras.layers.Conv2D(96, (3, 3), activation="relu", kernel_initializer=initializer, padding="same", name="Conv3")(x)
+    x = keras.layers.BatchNormalization()(x)#(synchronized = True)(x)
+    x = keras.layers.Conv2D(48, (3, 3), strides=(2, 2), activation="relu", kernel_initializer=initializer, padding="same", name="Conv4")(x)
+    x = keras.layers.Conv2D(96, (3, 3), activation="relu", kernel_initializer=initializer, padding="same", name="Conv5")(x)
+    x = keras.layers.BatchNormalization()(x)#(synchronized = True)(x)
+    x = keras.layers.Conv2D(64, (3, 3), activation="relu", kernel_initializer=initializer, padding="same", name="Conv6")(x)
     x = keras.layers.Dropout(0.5)(x)
     
-    new_shape = ((img_width // 4), (img_height // 4) * 32)
+    new_shape = ((img_width // 4), (img_height // 4) * 64)
     x = keras.layers.Reshape(target_shape=new_shape, name="reshape")(x)
     x = keras.layers.Dense(128, activation="relu", name="dense1")(x)
     x = keras.layers.Dropout(0.5)(x)
@@ -131,5 +133,8 @@ def build_napoleon_bonapetite(img_width, img_height, char, lr_value):
     output = CTCLayer(name="ctc_loss")(labels, x)
 
     model = keras.models.Model(inputs=[input_img, labels], outputs=output, name="handwriting_recognizer")
+    
+    opt = keras.optimizers.Adam(lr_value)
+    model.compile(optimizer=opt)
     
     return model
