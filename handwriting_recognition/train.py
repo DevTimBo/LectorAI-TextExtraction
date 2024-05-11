@@ -6,16 +6,12 @@ import utils.model_functionality as model_functionality
 #Imports
 import tensorflow as tf
 from tensorflow import keras
-from keras.callbacks import EarlyStopping
-import matplotlib.pyplot as plt
-from matplotlib.ticker import StrMethodFormatter
 import numpy as np
 import time
 import os
 import re
 from keras.callbacks import History
 from utils.config import *
-import pickle
 iam_history1, iam_history2, transfer_history1, transfer_history2, transfer_history3 = None, None, None, None, None 
 
 import handwriting_recognition.utils.tokenizer as tokenizer
@@ -110,6 +106,8 @@ def combine_n_histories(*histories):
 
 
 if __name__ == "__main__":
+    np.random.seed(TF_SEED)
+    tf.random.set_seed(TF_SEED)
     gpus = tf.config.experimental.list_physical_devices('GPU')
     GPU_LIST = []
     for gpu in gpus:

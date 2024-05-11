@@ -16,14 +16,14 @@ class hyperparameter_tuner:
         self.decay_steps = decay_steps
 
     def __call__(self, model):
-        x_train_img_paths, y_train_labels = load_transfer_data.get_train_data()
-        x_val_img_paths, y_val_labels = load_transfer_data.get_validation_data()
-        train_ds = tk.prepare_dataset(x_train_img_paths, y_train_labels, (IMAGE_WIDTH, IMAGE_HEIGHT), BATCH_SIZE)
+        x_train_img_paths, y_train_labels = load_transfer_data.train_data
+        x_val_img_paths, y_val_labels = load_transfer_data.val_data
+        train_ds = tk.prepare_augmented_dataset(x_train_img_paths, y_train_labels, (IMAGE_WIDTH, IMAGE_HEIGHT), BATCH_SIZE)
         val_ds = tk.prepare_dataset(x_val_img_paths, y_val_labels, (IMAGE_WIDTH, IMAGE_HEIGHT), BATCH_SIZE)
         callbacks = [tf.keras.callbacks.EarlyStopping(monitor="val_loss", patience=PATIENCE, restore_best_weights=True)]
         for optimizer_name in self.optimizers_list:
             for scheduler_name in self.lrs_list:
-                lr_scheduler = lrs.lr_scheduler(initial_learning_rate=ilr, decay_steps=self.decay_steps, name = scheduler_name)()
+                lr_scheduler = lrs.lr_scheduler(initial_learning_rate=self.initial_learning_rate, decay_steps=self.decay_steps, name = scheduler_name)()
                 optimizer = opt.optimizers(learning_rate = lr_scheduler, name = optimizer_name)()
                 tf.print(f"Optimizer: {optimizer}, Scheduler: {lr_scheduler}")
                 model.compile(optimizer=optimizer)

@@ -1,8 +1,5 @@
 import keras
 import tensorflow as tf
-from keras import layers
-import numpy as np
-from keras.models import Sequential
 
 initializer = 'lecun_normal'
 

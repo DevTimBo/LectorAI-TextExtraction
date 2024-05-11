@@ -9,9 +9,6 @@ It is used to compute the CTC loss function and incorporate it into a Keras mode
 # Used imports
 import keras
 import tensorflow as tf
-from keras import layers
-import numpy as np
-from keras.models import Sequential
 
 # A custom layer for Connectionist Temporal Classification (CTC) in Keras.
 class CTCLayer(keras.layers.Layer):

@@ -6,9 +6,7 @@ Dependencies: Depending on the used notebook a different base_path needs to be u
 Every other element stays independent. 
 """
 # Used imports
-import numpy as np
 import os
-import tensorflow as tf
 from utils.config import TRANSFER_DATASET_PATH
 
 characters = set() # Set to contain unique characters

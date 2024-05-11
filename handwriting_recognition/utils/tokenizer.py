@@ -22,10 +22,7 @@ chars = sorted(list(chars))
 char_to_num = StringLookup(vocabulary=list(chars), mask_token=None)
 num_to_char = StringLookup(vocabulary=char_to_num.get_vocabulary(), mask_token=None, invert=True)
 
-img_size = (512, 32)  # default gets overwritten by config
-batch_size = 64  # default gets overwritten by config
 padding_token = 99
-
 
 def vectorize_label(label):
     label = char_to_num(tf.strings.unicode_split(label, input_encoding="UTF-8"))
