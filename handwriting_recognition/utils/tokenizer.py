@@ -6,7 +6,7 @@
 
 from keras.layers import StringLookup
 import tensorflow as tf
-import handwriting_recognition.utils.preprocess as preprocess
+import utils.preprocess as preprocess
 import numpy as np
 
 AUTOTUNE = tf.data.AUTOTUNE

@@ -1,6 +1,6 @@
 import utils.optimizers as opt
 import utils.learning_rate_scheduler as lrs
-import handwriting_recognition.utils.tokenizer as tk
+import utils.tokenizer as tk
 import utils.load_transfer_data as load_transfer_data
 import utils.model_functionality as mf
 from utils.config import *

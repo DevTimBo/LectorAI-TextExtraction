@@ -113,5 +113,5 @@ def get_test_data():
 data = read_data()
 train_samples, test_samples, validation_samples = split_data(data)
 train_data = get_train_data()
-validation_data = get_validation_data()
+val_data = get_validation_data()
 test_data = get_test_data()

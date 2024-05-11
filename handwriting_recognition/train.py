@@ -3,6 +3,7 @@ import utils.load_data as load_data
 import utils.load_transfer_data as load_transfer_data
 import utils.models as models
 import utils.model_functionality as model_functionality
+import utils.tokenizer as tokenizer
 #Imports
 import tensorflow as tf
 from tensorflow import keras
@@ -12,19 +13,20 @@ import os
 import re
 from keras.callbacks import History
 from utils.config import *
-iam_history1, iam_history2, transfer_history1, transfer_history2, transfer_history3 = None, None, None, None, None 
 
-import handwriting_recognition.utils.tokenizer as tokenizer
 
 def main():
+    iam_history1, iam_history2, transfer_history1, transfer_history2, transfer_history3 = None, None, None, None, None 
+    callbacks = [tf.keras.callbacks.EarlyStopping(monitor="val_loss", patience=PATIENCE, restore_best_weights=True)]
+
     # IAM Dataset
     x_train_img_paths, y_train_labels = load_data.train_data
     x_test_img_paths, y_test_labels = load_data.test_data
     x_val_img_paths, y_val_labels = load_data.val_data
     
     # Transfer Dataset
-    x_train_transfer_img_paths, y_train_transfer_labels = load_transfer_data.train_data
-    x_val_transfer_img_paths, y_val_transfer_labels = load_transfer_data.val_data
+    x_train_transfer_img_paths, y_train_transfer_labels = load_transfer_data.get_train_data()
+    x_val_transfer_img_paths, y_val_transfer_labels = load_transfer_data.get_validation_data()
 
     #train_ds = tokenizer.prepare_dataset(x_train_img_paths, y_train_labels, (IMAGE_WIDTH,IMAGE_HEIGHT),BATCH_SIZE)
     val_ds = tokenizer.prepare_dataset(x_val_img_paths, y_val_labels,(IMAGE_WIDTH,IMAGE_HEIGHT),BATCH_SIZE)
@@ -36,8 +38,10 @@ def main():
     ## Phase 1
     start_time = time.time()
     model = models.build_model9v3_xl(IMAGE_WIDTH, IMAGE_HEIGHT, char, LEARNING_RATE)
-    prediction_model, iam_history1 = model_functionality.train_model(model, aug_train_ds, val_ds)
-
+    prediction_model, iam_history1 = model_functionality.train_model(model, aug_train_ds, val_ds, EPOCHS, callbacks)
+    ## Phase 2 Lower Learning Rate
+    model = models.build_model9v3_xl(IMAGE_WIDTH, IMAGE_HEIGHT, char, LEARNING_RATE/10)
+    prediction_model, iam_history2 = model_functionality.train_model(model, aug_train_ds, val_ds, EPOCHS, callbacks)
     # Delete old datasets of memory
     if TRANSFER_LEARNING:
         del aug_train_ds
@@ -56,17 +60,17 @@ def main():
                 layer.trainable = True
             else:
                 layer.trainable = False
-        prediction_model, transfer_history1 = model_functionality.train_model(model, aug_train_ds, val_ds)
+        prediction_model, transfer_history1 = model_functionality.train_model(model, aug_train_ds, val_ds, EPOCHS, callbacks)
         ## Phase 2 - Full Training
         for layer in model.layers:
             layer.trainable = True
         ## Phase 3 - Lower Learning Rate
-        prediction_model, transfer_history2 = model_functionality.train_model(model, aug_train_ds, val_ds)
+        prediction_model, transfer_history2 = model_functionality.train_model(model, aug_train_ds, val_ds, EPOCHS, callbacks)
         opt = keras.optimizers.Adam(LEARNING_RATE/10)
         model.compile(optimizer=opt)
-        prediction_model, transfer_history3 = model_functionality.train_model(model, aug_train_ds, val_ds)
-        total_duration = time.time() - start_time
-
+        prediction_model, transfer_history3 = model_functionality.train_model(model, aug_train_ds, val_ds, EPOCHS, callbacks)
+    
+    total_duration = time.time() - start_time
     # Combine Histories
     history = combine_n_histories(iam_history1, iam_history2, transfer_history1, transfer_history2, transfer_history3)
 
@@ -83,10 +87,10 @@ def main():
 
     if SAVE_HISTORY:
         model_functionality.plot_history(history, NAME, TEST_RESULT_DIR_NAME, True)
-        model_functionality.plot_evaluation(NAME, TEST_RESULT_DIR_NAME, True, val_ds, prediction_model)
+        model_functionality.plot_evaluation(prediction_model, NAME, TEST_RESULT_DIR_NAME, True, val_ds)
 
     if MODEL_SAVE:
-        model_functionality.save_model(prediction_model, model_path, MODEL_NAME)
+        model_functionality.save_model(model)
 
 
 def combine_n_histories(*histories):

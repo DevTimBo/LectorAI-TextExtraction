@@ -1,6 +1,6 @@
 import utils.load_transfer_data as load_transfer_data
 import utils.load_data as load_data
-import handwriting_recognition.utils.tokenizer as tokenizer
+import utils.tokenizer as tokenizer
 from utils.config import *
 
 import tensorflow as tf
@@ -48,14 +48,10 @@ def extract_model_and_weights(model_path: str, weight_path: str):
     return model
 
 
-def save_model(
-    model, model_name: str = MODEL_NAME, model_directory: str = MODEL_DIR_NAME
-):
+def save_model(model, model_name: str = MODEL_NAME, model_directory: str = MODEL_DIR_NAME):
     if not os.path.exists(model_directory):
         create_dir(model_directory)
-    model_path = os.path.join(
-        model_directory, "{model_name}".format(model_name=model_name)
-    )
+    model_path = os.path.join(model_directory, "{model_name}".format(model_name=model_name))
     model.save(model_path)
     model.save_weights(
         os.path.join(model_path, f"{model_name}{weights_keras_string}"),
@@ -68,9 +64,7 @@ def save_model(
     with open(os.path.join(model_path, f"{model_name}.json"), "w") as f:
         f.write(json_string)
 
-    data_to_save = (load_transfer_data.max_len, load_transfer_data.characters)
-    # data_to_save == (load_data.max_len, load_data.characters)
-
+    data_to_save = (tokenizer.max_len, tokenizer.chars)
     with open(os.path.join(model_path, "handwriting_chars.pkl"), "wb") as file:
         pickle.dump(data_to_save, file)
 
@@ -183,15 +177,12 @@ def plot_history(history, name, dir_path, save_fig):
         plt.title(f"Name: {name}")
         path = os.path.join(dir_path, f"{name}_history.png")
         plt.savefig(path)
-
-    if HYPERPARAMETER_TUNE is False:
-        plt.show()
+        plt.close()
 
 
-def plot_evaluation(
-    prediction_model, name, dir_path, save_fig, val_ds: tf.data.Dataset
-):
-    for batch in val_ds.take(1):
+
+def plot_evaluation(prediction_model, name, dir_path, save_fig, val_ds: tf.data.Dataset):
+    for batch in val_ds.take(0):
         batch_images = batch["image"]
         _, ax = plt.subplots(4, 4, figsize=(32, 8))
 
@@ -212,9 +203,8 @@ def plot_evaluation(
     if save_fig:
         path = os.path.join(dir_path, f"{name}_result.png")
         plt.savefig(path)
+        plt.close()
         
-    if HYPERPARAMETER_TUNE is False:
-        plt.show()
 
 
 def create_dir(path_to_dir: str):

@@ -1,6 +1,6 @@
 # Model Parameter
 MODEL_SAVE = True
-MODEL_NAME = "mafia_merger_acquisition"
+MODEL_NAME = "test1_transfer" #Model9v3_Words_Transfer"
 IMAGE_WIDTH = 1024
 IMAGE_HEIGHT = 128
 HYPERPARAMETER_TUNE = True
@@ -12,11 +12,11 @@ MODEL_WEIGHTS_PATH = f"{MODEL_PATH}/{MODEL_NAME}_weights.keras"
 # Training Parameter
 SAVE_HISTORY = True
 EPOCHS = 1
-BATCH_SIZE = 4
+BATCH_SIZE = 16
 TF_SEED = 42
 LEARNING_RATE = 0.001
 PATIENCE = 5
-TRANSFER_LEARNING = False
+TRANSFER_LEARNING = True
 
 # Data Parameter
 IAM_DATASET_PATH = "../dataset/iam_dataset"
