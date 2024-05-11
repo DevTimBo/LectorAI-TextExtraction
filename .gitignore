@@ -10,6 +10,7 @@ tempimages
 # checkpoints
 */checkpoint*/
 #/dataset/iam_dataset
+
 # Images
 *.png
 *.jpg

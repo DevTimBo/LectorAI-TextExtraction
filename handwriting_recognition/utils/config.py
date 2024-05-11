@@ -19,6 +19,6 @@ PATIENCE = 5
 TRANSFER_LEARNING = False
 
 # Data Parameter
-IAM_DATASET_PATH = "dataset/iam_dataset"
+IAM_DATASET_PATH = "../dataset/iam_dataset"
 WHAT_DATASET = "lines"
-TRANSFER_DATASET_PATH = "dataset/transfer_dataset"
+TRANSFER_DATASET_PATH = "../dataset/transfer_dataset"
