@@ -16,6 +16,7 @@ BATCH_SIZE = 4
 TF_SEED = 42
 LEARNING_RATE = 0.001
 PATIENCE = 5
+TRANSFER_LEARNING = False
 
 # Data Parameter
 IAM_DATASET_PATH = "dataset/iam_dataset"
