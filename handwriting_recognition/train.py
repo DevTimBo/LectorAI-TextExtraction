@@ -87,7 +87,7 @@ def main():
 
     if SAVE_HISTORY:
         model_functionality.plot_history(history, NAME, TEST_RESULT_DIR_NAME, True)
-        model_functionality.plot_evaluation(prediction_model, NAME, TEST_RESULT_DIR_NAME, True, val_ds)
+        model_functionality.plot_evaluation(NAME, TEST_RESULT_DIR_NAME, True, val_ds, prediction_model)
 
     if MODEL_SAVE:
         model_functionality.save_model(model)

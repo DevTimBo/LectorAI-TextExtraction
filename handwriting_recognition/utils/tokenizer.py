@@ -10,6 +10,9 @@ import utils.preprocess as preprocess
 import numpy as np
 
 AUTOTUNE = tf.data.AUTOTUNE
+from utils.config import *
+
+img_size = (IMAGE_WIDTH, IMAGE_HEIGHT)
 
 # Load Data
 import utils.load_transfer_data as load_transfer_data 

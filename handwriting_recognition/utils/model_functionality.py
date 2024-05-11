@@ -116,10 +116,10 @@ def save_train_history(
     if files_with_model_name:
         new_name = create_new_plot_name(model_name, files_with_model_name, NAME)
         plot_history(history, new_name, test_result_directory, True)
-        plot_evaluation(prediction_model, new_name, test_result_directory, True, val_ds)
+        plot_evaluation(NAME, test_result_directory, True, val_ds, prediction_model)
     else:
         plot_history(history, NAME, test_result_directory, True)
-        plot_evaluation(prediction_model, NAME, test_result_directory, True, val_ds)
+        plot_evaluation(NAME, test_result_directory, True, val_ds, prediction_model)
 
 
 def create_new_plot_name(model_name, names, format):
@@ -137,59 +137,37 @@ def create_new_plot_name(model_name, names, format):
 
 
 def plot_history(history, name, dir_path, save_fig):
-    """Plots the training history of a model.
-
-    This function takes the training history of a model and plots the training and validation loss
-    across epochs. It also plots the learning rate on a secondary y-axis using a logarithmic scale.
-
-    Args:
-        history: The training history of the model.
-        name (str): The name of the model.
-        dir_path (str): The directory path to save the plot.
-        save_fig (bool): A flag indicating whether to save the plot as an image.
-
-    Returns:
-        None
-    """
     metrics = history.history
     _, ax1 = plt.subplots()
-
-    # Plot für Trainings- und Validierungsverluste
-    ax1.plot(metrics["loss"], label="Training Loss", color="blue")
-    ax1.plot(metrics["val_loss"], label="Validation Loss", color="red")
-    ax1.set_xlabel("Epochs")
-    ax1.set_ylabel("Loss", color="black")
-    ax1.tick_params("y", colors="black")
-    ax1.legend(loc="upper left", bbox_to_anchor=(0.0, 0.95))
-
-    # Zweite Y-Achse für die Lernrate
+    ax1.plot(metrics['loss'], label='Training Loss', color='blue')
+    ax1.plot(metrics['val_loss'], label='Validation Loss', color='red')
+    ax1.set_xlabel('Epochs')
+    ax1.set_ylabel('Loss', color='black')
+    ax1.tick_params('y', colors='black')
+    ax1.legend(loc='upper left', bbox_to_anchor=(0.0, 0.95))  
     ax2 = ax1.twinx()
-    ax2.plot(metrics["lr"], label="Learning Rate", color="green")
-    ax2.set_ylabel("Learning Rate", color="black")
-
-    ax2.set_yscale("log")  # Verwende logarithmische Skala für die Lernrate
-
-    ax2.tick_params("y", colors="black")
-    ax2.yaxis.set_major_formatter(StrMethodFormatter("{x:1.0e}"))
-    ax2.legend(loc="upper right", bbox_to_anchor=(1.0, 0.95))
-
+    ax2.plot(metrics['lr'], label='Learning Rate', color='green')
+    ax2.set_ylabel('Learning Rate', color='black')
+    ax2.set_yscale('log') 
+    ax2.tick_params('y', colors='black')
+    ax2.yaxis.set_major_formatter(StrMethodFormatter('{x:1.0e}'))
+    ax2.legend(loc='upper right', bbox_to_anchor=(1.0, 0.95))  
     if save_fig:
-        plt.title(f"Name: {name}")
-        path = os.path.join(dir_path, f"{name}_history.png")
+        plt.title('Name: '+name)
+        path = os.path.join(dir_path, name + '_history.png')
         plt.savefig(path)
-        plt.close()
 
 
 
-def plot_evaluation(prediction_model, name, dir_path, save_fig, val_ds: tf.data.Dataset):
-    for batch in val_ds.take(0):
+def plot_evaluation(name, dir_path, save_fig, val_ds, prediction_model):
+    for batch in val_ds.take(1):
         batch_images = batch["image"]
         _, ax = plt.subplots(4, 4, figsize=(32, 8))
 
         preds = prediction_model.predict(batch_images)
         pred_texts = decode_batch_predictions(preds)
 
-        for i in range(min(16, BATCH_SIZE)):
+        for i in range(min(16,BATCH_SIZE)):
             img = batch_images[i]
             img = tf.image.flip_left_right(img)
             img = tf.transpose(img, perm=[1, 0, 2])
@@ -199,11 +177,10 @@ def plot_evaluation(prediction_model, name, dir_path, save_fig, val_ds: tf.data.
             title = f"Prediction: {pred_texts[i]}"
             ax[i // 4, i % 4].imshow(img, cmap="gray")
             ax[i // 4, i % 4].set_title(title)
-            ax[i // 4, i % 4].axis("off")
+            ax[i // 4, i % 4].axis("off")   
     if save_fig:
-        path = os.path.join(dir_path, f"{name}_result.png")
+        path = os.path.join(dir_path, name + '_result.png')
         plt.savefig(path)
-        plt.close()
         
 
 

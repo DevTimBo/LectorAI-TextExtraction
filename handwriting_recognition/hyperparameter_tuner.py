@@ -16,9 +16,9 @@ class hyperparameter_tuner:
         self.decay_steps = decay_steps
 
     def __call__(self, model):
-        x_train_img_paths, y_train_labels = load_transfer_data.train_data
-        x_val_img_paths, y_val_labels = load_transfer_data.val_data
-        train_ds = tk.prepare_augmented_dataset(x_train_img_paths, y_train_labels, (IMAGE_WIDTH, IMAGE_HEIGHT), BATCH_SIZE)
+        x_train_img_paths, y_train_labels = load_transfer_data.get_train_data()
+        x_val_img_paths, y_val_labels = load_transfer_data.get_validation_data()
+        train_ds = tk.prepare_augmented_dataset(x_train_img_paths, y_train_labels, BATCH_SIZE)
         val_ds = tk.prepare_dataset(x_val_img_paths, y_val_labels, (IMAGE_WIDTH, IMAGE_HEIGHT), BATCH_SIZE)
         callbacks = [tf.keras.callbacks.EarlyStopping(monitor="val_loss", patience=PATIENCE, restore_best_weights=True)]
         for optimizer_name in self.optimizers_list:
