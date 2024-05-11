@@ -1,7 +1,7 @@
 import tensorflow as tf
 
+#@tf.function
 class lr_scheduler:
-
     def __init__(self, initial_learning_rate: float = 0.001, decay_steps: int = 10000, name: str = "cosine_decay"):
         self.initial_learning_rate = initial_learning_rate
         self.decay_steps = decay_steps

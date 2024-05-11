@@ -1,14 +1,17 @@
 # Model Parameter
 MODEL_SAVE = True
-MODEL_NAME = "test1_transfer" #Model9v3_Words_Transfer"
+MODEL_NAME = "mafia_merger_acquisition" #Model9v3_Words_Transfer"
 IMAGE_WIDTH = 1024
 IMAGE_HEIGHT = 128
+
+# Pay attention to HYPERPARAMETER_TUNE for file location
 HYPERPARAMETER_TUNE = True
 
 # Directory Parameter
-MODEL_DIR_NAME = "models/keras"
+MODEL_DIR_NAME = "models/keras" if HYPERPARAMETER_TUNE is False else "models/hyperparameter_tuning"
 MODEL_PATH = f"{MODEL_DIR_NAME}/{MODEL_NAME}"
 MODEL_WEIGHTS_PATH = f"{MODEL_PATH}/{MODEL_NAME}_weights.keras"
+TEST_RESULT_DIR_NAME = f"{MODEL_PATH}/results"
 # Training Parameter
 SAVE_HISTORY = True
 EPOCHS = 1

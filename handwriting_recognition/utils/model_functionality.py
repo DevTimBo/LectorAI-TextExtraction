@@ -74,7 +74,7 @@ def save_train_history(
     history,
     val_ds,
     model_name: str = MODEL_NAME,
-    test_result_directory: str = "test_results",
+    test_result_directory: str = TEST_RESULT_DIR_NAME,
     total_duration: int = 0,
     add_name: str = None,
 ):
@@ -137,50 +137,50 @@ def create_new_plot_name(model_name, names, format):
 
 
 def plot_history(history, name, dir_path, save_fig):
-    metrics = history.history
-    _, ax1 = plt.subplots()
-    ax1.plot(metrics['loss'], label='Training Loss', color='blue')
-    ax1.plot(metrics['val_loss'], label='Validation Loss', color='red')
-    ax1.set_xlabel('Epochs')
-    ax1.set_ylabel('Loss', color='black')
-    ax1.tick_params('y', colors='black')
-    ax1.legend(loc='upper left', bbox_to_anchor=(0.0, 0.95))  
-    ax2 = ax1.twinx()
-    ax2.plot(metrics['lr'], label='Learning Rate', color='green')
-    ax2.set_ylabel('Learning Rate', color='black')
-    ax2.set_yscale('log') 
-    ax2.tick_params('y', colors='black')
-    ax2.yaxis.set_major_formatter(StrMethodFormatter('{x:1.0e}'))
-    ax2.legend(loc='upper right', bbox_to_anchor=(1.0, 0.95))  
-    if save_fig:
-        plt.title('Name: '+name)
-        path = os.path.join(dir_path, name + '_history.png')
-        plt.savefig(path)
+        metrics = history.history
+        _, ax1 = plt.subplots()
+        ax1.plot(metrics['loss'], label='Training Loss', color='blue')
+        ax1.plot(metrics['val_loss'], label='Validation Loss', color='red')
+        ax1.set_xlabel('Epochs')
+        ax1.set_ylabel('Loss', color='black')
+        ax1.tick_params('y', colors='black')
+        ax1.legend(loc='upper left', bbox_to_anchor=(0.0, 0.95))
+        ax2 = ax1.twinx()
+        ax2.plot(metrics['lr'], label='Learning Rate', color='green')
+        ax2.set_ylabel('Learning Rate', color='black')
+        ax2.set_yscale('log')
+        ax2.tick_params('y', colors='black')
+        ax2.yaxis.set_major_formatter(StrMethodFormatter('{x:1.0e}'))
+        ax2.legend(loc='upper right', bbox_to_anchor=(1.0, 0.95))
+        if save_fig:
+                plt.title(f'Name: {name}')
+                path = os.path.join(dir_path, f'{name}_history.png')
+                plt.savefig(path)
 
 
 
 def plot_evaluation(name, dir_path, save_fig, val_ds, prediction_model):
-    for batch in val_ds.take(1):
-        batch_images = batch["image"]
-        _, ax = plt.subplots(4, 4, figsize=(32, 8))
+        for batch in val_ds.take(1):
+            batch_images = batch["image"]
+            _, ax = plt.subplots(4, 4, figsize=(32, 8))
 
-        preds = prediction_model.predict(batch_images)
-        pred_texts = decode_batch_predictions(preds)
+            preds = prediction_model.predict(batch_images)
+            pred_texts = decode_batch_predictions(preds)
 
-        for i in range(min(16,BATCH_SIZE)):
-            img = batch_images[i]
-            img = tf.image.flip_left_right(img)
-            img = tf.transpose(img, perm=[1, 0, 2])
-            img = (img * 255.0).numpy().clip(0, 255).astype(np.uint8)
-            img = img[:, :, 0]
+            for i in range(min(16,BATCH_SIZE)):
+                img = batch_images[i]
+                img = tf.image.flip_left_right(img)
+                img = tf.transpose(img, perm=[1, 0, 2])
+                img = (img * 255.0).numpy().clip(0, 255).astype(np.uint8)
+                img = img[:, :, 0]
 
-            title = f"Prediction: {pred_texts[i]}"
-            ax[i // 4, i % 4].imshow(img, cmap="gray")
-            ax[i // 4, i % 4].set_title(title)
-            ax[i // 4, i % 4].axis("off")   
-    if save_fig:
-        path = os.path.join(dir_path, name + '_result.png')
-        plt.savefig(path)
+                title = f"Prediction: {pred_texts[i]}"
+                ax[i // 4, i % 4].imshow(img, cmap="gray")
+                ax[i // 4, i % 4].set_title(title)
+                ax[i // 4, i % 4].axis("off")
+        if save_fig:
+                path = os.path.join(dir_path, f'{name}_result.png')
+                plt.savefig(path)
         
 
 

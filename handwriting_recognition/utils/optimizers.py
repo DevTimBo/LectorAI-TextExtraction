@@ -1,5 +1,7 @@
 import keras
+import tensorflow as tf
 
+#@tf.function
 class optimizers:
      def __init__(self, learning_rate, name):
           self.learning_rate = learning_rate
