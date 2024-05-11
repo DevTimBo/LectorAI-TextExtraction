@@ -1,7 +1,7 @@
 #Own Imports
-import load_data
-import load_transfer_data
-import models
+import utils.load_data as load_data
+import utils.load_transfer_data as load_transfer_data
+import utils.models as models
 #Imports
 import tensorflow as tf
 from tensorflow import keras
@@ -13,23 +13,22 @@ import time
 import os
 import re
 from keras.callbacks import History
-from config import *
+from utils.config import *
 import pickle
 iam_history1, iam_history2, transfer_history1, transfer_history2, transfer_history3 = None, None, None, None, None 
 
-tokenizer = None
+import handwriting_recognition.utils.tokenizer as tokenizer
 
 def main():
-    load_data.print_samples(IAM_DATASET_PATH)
-    x_train_img_paths, y_train_labels = load_data.get_train_data()
-    x_test_img_paths, y_test_labels = load_data.get_test_data()
-    x_val_img_paths, y_val_labels = load_data.get_validation_data()
+    # IAM Dataset
+    x_train_img_paths, y_train_labels = load_data.train_data
+    x_test_img_paths, y_test_labels = load_data.test_data
+    x_val_img_paths, y_val_labels = load_data.val_data
+    
+    # Transfer Dataset
+    x_train_transfer_img_paths, y_train_transfer_labels = load_transfer_data.train_data
+    x_val_transfer_img_paths, y_val_transfer_labels = load_transfer_data.val_data
 
-    x_train_transfer_img_paths, y_train_transfer_labels = load_transfer_data.get_train_data()
-    x_val_transfer_img_paths, y_val_transfer_labels = load_transfer_data.get_validation_data()
-    # Tokenizer
-    global tokenizer
-    import tokenizer
     #train_ds = tokenizer.prepare_dataset(x_train_img_paths, y_train_labels, (IMAGE_WIDTH,IMAGE_HEIGHT),BATCH_SIZE)
     val_ds = tokenizer.prepare_dataset(x_val_img_paths, y_val_labels,(IMAGE_WIDTH,IMAGE_HEIGHT),BATCH_SIZE)
     test_ds = tokenizer.prepare_dataset(x_test_img_paths, y_test_labels,(IMAGE_WIDTH,IMAGE_HEIGHT),BATCH_SIZE)

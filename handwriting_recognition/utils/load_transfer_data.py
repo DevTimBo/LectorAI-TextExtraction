@@ -9,7 +9,7 @@ Every other element stays independent.
 import numpy as np
 import os
 import tensorflow as tf
-from config import TRANSFER_DATASET_PATH
+from utils.config import TRANSFER_DATASET_PATH
 
 characters = set() # Set to contain unique characters
 max_len = 0 # Number of total characters used

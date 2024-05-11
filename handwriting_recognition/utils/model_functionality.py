@@ -1,7 +1,7 @@
-import load_transfer_data
-import load_data
-import tokenizer
-from config import *
+import utils.load_transfer_data as load_transfer_data
+import utils.load_data as load_data
+import handwriting_recognition.utils.tokenizer as tokenizer
+from utils.config import *
 
 import tensorflow as tf
 import matplotlib.pyplot as plt

@@ -6,14 +6,14 @@
 
 from keras.layers import StringLookup
 import tensorflow as tf
-import preprocess as preprocess
+import handwriting_recognition.utils.preprocess as preprocess
 import numpy as np
 
 AUTOTUNE = tf.data.AUTOTUNE
 
 # Load Data
-import load_transfer_data 
-import load_data
+import utils.load_transfer_data as load_transfer_data 
+import utils.load_data as load_data
 max_len = max(load_transfer_data.max_len, load_data.max_len)
 
 chars = set(list(load_transfer_data.characters) + list(load_data.characters))

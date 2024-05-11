@@ -1,9 +1,9 @@
-import optimizers as opt
-import learning_rate_scheduler as lrs
-import tokenizer as tk
-import load_transfer_data
-import model_functionality as mf
-from config import *
+import utils.optimizers as opt
+import utils.learning_rate_scheduler as lrs
+import handwriting_recognition.utils.tokenizer as tk
+import utils.load_transfer_data as load_transfer_data
+import utils.model_functionality as mf
+from utils.config import *
 
 import tensorflow as tf
 import time

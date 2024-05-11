@@ -5,6 +5,8 @@ myvenv
 myenv
 detected
 test_results
+temp_images
+tempimages
 # checkpoints
 */checkpoint*/
 #/dataset/iam_dataset

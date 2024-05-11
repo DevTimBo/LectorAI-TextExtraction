@@ -5,7 +5,7 @@
 import numpy as np
 import os
 import tensorflow as tf
-from config import IAM_DATASET_PATH, WHAT_DATASET
+from utils.config import IAM_DATASET_PATH, WHAT_DATASET
 
 np.random.seed(42)
 tf.random.set_seed(42)
@@ -89,10 +89,6 @@ def clean_labels(labels):
         cleaned_labels.append(label)
     return cleaned_labels
 
-
-data = read_data()
-train_samples, test_samples, validation_samples = split_data(data)
-
 def print_samples(new_base_path):
     global base_path
     base_path = new_base_path
@@ -118,3 +114,8 @@ def get_test_data():
     
     return test_path, test_labels_cleaned
     
+data = read_data()
+train_samples, test_samples, validation_samples = split_data(data)
+train_data = get_train_data()
+validation_data = get_validation_data()
+test_data = get_test_data()
