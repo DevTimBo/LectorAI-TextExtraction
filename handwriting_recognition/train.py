@@ -40,7 +40,8 @@ def main():
     model = models.build_model9v3_xl(IMAGE_WIDTH, IMAGE_HEIGHT, char, LEARNING_RATE)
     prediction_model, iam_history1 = model_functionality.train_model(model, aug_train_ds, val_ds, EPOCHS, callbacks)
     ## Phase 2 Lower Learning Rate
-    model = models.build_model9v3_xl(IMAGE_WIDTH, IMAGE_HEIGHT, char, LEARNING_RATE/10)
+    opt = keras.optimizers.Adam(LEARNING_RATE)
+    model.compile(optimizer=opt)
     prediction_model, iam_history2 = model_functionality.train_model(model, aug_train_ds, val_ds, EPOCHS, callbacks)
     # Delete old datasets of memory
     if TRANSFER_LEARNING:
