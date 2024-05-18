@@ -4,6 +4,7 @@ import tensorflow as tf
 import ultralytics
 
 def convert_torch_to_tf(weights_path):
+    # Load YOLOv8 model
     model = ultralytics.YOLO(weights_path)  # Replace with your model path
 
     # Convert to ONNX
