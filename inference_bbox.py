@@ -1,34 +1,10 @@
 import cv2
-import keras_cv
 import numpy as np
-import onnx
-import onnx_tf
-import tensorflow as tf
-import ultralytics
+from ultralytics import YOLO
+import cv2
 
 
-
-CLASSES =[
-    "parent_first_name",
-    "parent_last_name",
-    "parent_email",
-    "parent_phone",
-
-    "child_first_name",
-    "child_last_name",
-    "child_class",
-
-    "address_street_and_number",
-    "address_zip",
-    "address_city",
-
-    "ag_1",
-    "ag_2",
-    "ag_3",
-]
-
-NUM_CLASSES = len(CLASSES)
-MODEL_WEIGHT_PATH = None
+MODEL_WEIGHT_PATH = "try/sub/best.pt"
 MODEL_IMAGE_WIDTH = 1024
 MODEL_IMAGE_HEIGHT = 128
 
@@ -37,66 +13,18 @@ class bbox_model:
         self.model = self.load_model_and_weights(MODEL_WEIGHT_PATH)   
 
     def load_model_and_weights(self, model_weight_path: str):
-        """Loads a pre-trained model and its weights.
-
-        This function, loads a pre-trained model and its weights
-        from the specified directory. It checks if both the model and weights exist before loading.
-
-        Returns:
-            model: The pre-trained Keras model with loaded weights, if found.
-        """
-        backbone = keras_cv.models.YOLOV8Backbone.from_preset(
-            "yolo_v8_xs_backbone_coco",
-            load_weights=True 
-        )
-        model = keras_cv.models.YOLOV8Detector(
-            num_classes=NUM_CLASSES, 
-            bounding_box_format="xyxy",
-            backbone=backbone,
-            fpn_depth=1,
-        )
-        # No Weights yet
-        # yolo.load_weights(model_weight_path)
+        model = YOLO(model_weight_path)  
         return model
     
-    def inference(self, image_path):
-        image = cv2.imread(image_path)
-        resized_image = cv2.resize(image, (1536, 768))
-        resized_image = np.expand_dims(resized_image, axis=0)
-        predictions = self.model.predict(resized_image)
-        return self._extracted_predictions(predictions)
-    
-    def converted_model_inference(self, model_weight_path: str, image_path):
-        model = self.convert_torch_to_tf(model_weight_path)
-        # Preprocessing
-        image = cv2.imread(image_path) 
-
-        # Placeholder
-        predictions = model.predict(image)
-
-        return self._extracted_predictions(predictions)
-
-    def _extracted_predictions(self, predictions):
-        boxes = predictions['boxes'][0]
-        confidence = predictions['confidence'][0]
-        classes = predictions['classes'][0]
-        return boxes, confidence, classes
-    
-    def convert_torch_to_tf(self, weights_path):
-        # Load YOLOv8 model
-        model = ultralytics.YOLO(weights_path)  # Replace with your model path
-
-        # Convert to ONNX
-        success = model.export(format='onnx')
-        if not success:
-            raise RuntimeError("ONNX export failed")
-        onnx_model = onnx.load(f'{weights_path}.onnx')
-        tf_rep = onnx_tf.backend.prepare(onnx_model)
-        tf_rep.export_graph(f"{weights_path}/tf_model")
-        
-        return tf.saved_model.load(f"{weights_path}/tf_model")
-
-
+    def inference(self, image):
+        results = self.model(image)
+        result = results[0].boxes
+        classes = result.cls
+        confidences = result.conf
+        boxes = result.xywh
+        mapped_classes = [self.model.names[int(cls)] for cls in classes]
+        return boxes, confidences, mapped_classes
+       
 bbox_model = bbox_model()
 
 if __name__ == "__main__":
