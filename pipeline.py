@@ -1,6 +1,5 @@
 from flask import jsonify
 import os
-import tensorflow as tf
 from inference_smartapp import handwriting_model
 from inference_bbox import bbox_model
 import cv2 
@@ -26,7 +25,6 @@ cropping_params = {
     "ag_schueler_unterschrift": {"left": 0.2, "bottom": 0}, 
 }
 
-
 def crop(x1, y1, x2, y2, image, crop_left_percent, crop_bottom_percent):
     crop_left = int(crop_left_percent * (x2 - x1))
     crop_bottom = int(crop_bottom_percent * (y2 - y1))
@@ -41,14 +39,12 @@ class pipeline:
     def __init__(self):
         self.bbox_model = bbox_model
         self.handwriting_model = handwriting_model
-        
+
     def _predict_bounding_boxes(self, image):
         return self.bbox_model.inference(image)
-    
+
     def _predict_handwriting(self, image):
         return self.handwriting_model.inference(image)
-    
-   
 
     def __call__(self, directory, filename):
         image = cv2.imread(os.path.join(directory, filename))
@@ -62,14 +58,13 @@ class pipeline:
 
             crop_left_percent = 0
             crop_bottom_percent = 0
-            if map_class in cropping_params:
-                #print(map_class, cropping_params[map_class])
-                params = cropping_params[map_class]
-                crop_left_percent = float(params["left"])
-                crop_bottom_percent = float(params["bottom"])
-            else:
+            if map_class not in cropping_params:
                 continue
 
+            #print(map_class, cropping_params[map_class])
+            params = cropping_params[map_class]
+            crop_left_percent = float(params["left"])
+            crop_bottom_percent = float(params["bottom"])
             imgCropped = crop(x1, y1, x2, y2, image, crop_left_percent, crop_bottom_percent)
             cropped_images.append(imgCropped)
 
