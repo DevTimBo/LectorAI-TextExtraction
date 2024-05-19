@@ -2,7 +2,6 @@ import torch
 import pandas as pd
 import os
 from PIL import Image
-from Levenshtein import distance
 from torchvision import transforms
 import matplotlib.pyplot as plt
 
@@ -88,21 +87,7 @@ class Dataset:
 
         return {"pixel_values": pixel_values.squeeze(), "labels": torch.tensor(labels)}
 
-def compute_metrics(pred, processor):
-    labels_ids = pred.label_ids
-    pred_ids = pred.predictions
-
-    pred_str = processor.batch_decode(pred_ids, skip_special_tokens=True)
-    labels_ids[labels_ids == -100] = processor.tokenizer.pad_token_id
-    label_str = processor.batch_decode(labels_ids, skip_special_tokens=True)
-    sum_leven = sum(
-        distance(label, pred) for label, pred in zip(label_str, pred_str)
-    )
-    levenshtein = sum_leven / len(label_str)
-
-    return {"levenshtein": levenshtein}
-
-def plot_history(trainer, save_model_name):
+def plot_history(trainer, save_model_name, show_plot=False):
     # Assuming you have completed training and your trainer object is named 'trainer'
     # Extracting metrics from the log history
     log_history = trainer.state.log_history
@@ -132,7 +117,8 @@ def plot_history(trainer, save_model_name):
     plt.ylabel(["Levenshtein Distance", "Training Loss", "Eval Loss"])
     plt.grid(True)
     plt.savefig(f"{save_model_name}/results.png")
-    plt.show()
+    if show_plot:
+        plt.show()
 
 def try_model(model, processor, val_df, eval_dataset):
     print("Predicted; True")

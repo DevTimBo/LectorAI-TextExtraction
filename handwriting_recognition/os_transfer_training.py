@@ -1,8 +1,9 @@
 import torch
 import os
+from Levenshtein import distance
 from transformers import TrOCRProcessor, VisionEncoderDecoderModel, default_data_collator
 from transformers import Seq2SeqTrainer, Seq2SeqTrainingArguments
-from utils.open_source_functionality import load_os_dataset, compute_metrics, plot_history, try_model
+from utils.open_source_functionality import load_os_dataset, plot_history, try_model
 
 print("CUDA available:", torch.cuda.is_available())
 print("CUDA version:", torch.version.cuda)
@@ -10,7 +11,7 @@ print("CUDA version:", torch.version.cuda)
 BATCH_SIZE = 16
 EPOCHS = 1
 
-model_list = ["microsoft/trocr-small-stage1"]
+model_list = ["microsoft/trocr-small-stage1", "microsoft/trocr-base-stage1"]
 base_path = "models/trocr/"
 dataset_path = 'dataset/transfer_dataset/'
 train_dataset_path = os.path.join(dataset_path, 'train')
@@ -52,6 +53,20 @@ for model_name in model_list:
         greater_is_better=False  
     )
 
+    def compute_metrics(pred):
+        labels_ids = pred.label_ids
+        pred_ids = pred.predictions
+
+        pred_str = processor.batch_decode(pred_ids, skip_special_tokens=True)
+        labels_ids[labels_ids == -100] = processor.tokenizer.pad_token_id
+        label_str = processor.batch_decode(labels_ids, skip_special_tokens=True)
+        sum_leven = 0
+        for label, pred in zip(label_str, pred_str):
+            sum_leven += distance(label, pred)
+        levenshtein = sum_leven / len(label_str)
+    
+        return {"levenshtein": levenshtein}
+    
     trainer = Seq2SeqTrainer(
         model=model,
         tokenizer=processor.image_processor,
@@ -63,7 +78,8 @@ for model_name in model_list:
     )
 
     trainer.train()
-    plot_history(trainer, save_model_name)
+    plot_history(trainer, save_model_name, show_plot=False)
     trainer.save_model(save_model_name)
-    try_model(save_model_name, processor, model_name)
+    #try_model(save_model_name, processor, model_name, eval_dataset)
+    
 print("Training complete!")

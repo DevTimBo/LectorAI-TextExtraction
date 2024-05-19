@@ -5,7 +5,7 @@ IMAGE_WIDTH = 1024
 IMAGE_HEIGHT = 128
 
 # Pay attention to HYPERPARAMETER_TUNE for file location
-HYPERPARAMETER_TUNE = True
+HYPERPARAMETER_TUNE = False
 
 # Directory Parameter
 MODEL_DIR_NAME = "models/keras" if HYPERPARAMETER_TUNE is False else "models/hyperparameter_tuning"
