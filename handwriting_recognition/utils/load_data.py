@@ -62,6 +62,8 @@ def get_image_paths_and_labels(samples):
 def get_vocabulary_length_and_clean_labels(train_labels):
     train_labels_cleaned = []
     global characters, max_len
+    #added because characters was somehow defined as list - jason
+    characters = set()
 
     for label in train_labels:
         label = label.split(" ")[-1].strip()

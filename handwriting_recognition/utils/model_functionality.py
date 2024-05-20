@@ -41,12 +41,12 @@ def load_model_and_weights(model_path: str, weight_path: str):
 
 
 def extract_model_and_weights(model_path: str, weight_path: str):
-    print("Loading pre-trained model and weights...")
-    model = tf.keras.models.load_model(model_path)
-    model_weight_path = weight_path
-    model.load_weights(model_weight_path)
-    print("Model and weights loaded successfully.")
-    return model
+        print("Loading pre-trained model and weights...")
+        model = tf.keras.models.load_model(model_path)
+        model.load_weights(weight_path)
+        print("Model and weights loaded successfully.")
+        print(weight_path)
+        return model
 
 
 def save_model(model, model_name: str = MODEL_NAME, model_directory: str = MODEL_DIR_NAME):
