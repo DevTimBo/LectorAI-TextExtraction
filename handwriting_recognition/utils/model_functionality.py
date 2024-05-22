@@ -107,7 +107,7 @@ def save_train_history(
             height=IMAGE_HEIGHT,
             width=IMAGE_WIDTH,
             loss=round(metrics["loss"][-1], 2),
-            val_loss=round(metrics["val_loss"][-1], 2),
+            val_loss=round(min(metrics["val_loss"]), 2),
             time=round(total_duration),
         )
 

@@ -20,7 +20,7 @@ class hyperparameter_tuner:
         self.learning_rate_list = [0.001]
         self.initial_learning_rate = initial_learning_rate
 
-    def __call__(self, base_model):
+    def __call__(self, base_model = None):
         best_hyperparameters = {}
         x_train_img_paths, y_train_labels = load_transfer_data.get_train_data()
         x_val_img_paths, y_val_labels = load_transfer_data.get_validation_data()
@@ -30,13 +30,13 @@ class hyperparameter_tuner:
             for scheduler_name in self.lrs_list:
                 for learning_rate in self.learning_rate_list:
                     # Model Name to be saved and for tensorboard/results plots
-                    model_name = f"{MODEL_NAME}_{optimizer_name}_{scheduler_name}dataset_transfer_{learning_rate}"
+                    model_name = f"MAFIA_BOSS_LINES_NEW_DS_{optimizer_name}"#f"{MODEL_NAME}_{optimizer_name}_{scheduler_name}new_dataset_transfer_{learning_rate}"
                     callbacks = [tf.keras.callbacks.EarlyStopping(monitor="val_loss", patience=PATIENCE, restore_best_weights=True),
                     tf.keras.callbacks.TensorBoard(log_dir=f"{MODEL_DIR_NAME}/logs/{model_name}")]
                     
                     # Load Model if u want to use different pre-trained models
-                    #model_path = f"{MODEL_DIR_NAME}/trained_with_lines_dataset/{MODEL_NAME}_{optimizer_name}_dataset_lines_0.001"
-                    #model = mf.load_model_and_weights(model_path, f"{model_path}/{MODEL_NAME}_{optimizer_name}_dataset_lines_0.001_weights.keras")
+                    model_path = f"{MODEL_DIR_NAME}/trained_with_lines_dataset/{MODEL_NAME}_{optimizer_name}_dataset_lines_0.001"
+                    base_model = mf.load_model_and_weights(model_path, f"{model_path}/{MODEL_NAME}_{optimizer_name}_dataset_lines_0.001_weights.keras")
                     
                     #lr_scheduler = lrs.lr_scheduler(initial_learning_rate=learning_rate, decay_steps=decay_steps, name = scheduler_name)()
                     optimizer = opt.optimizers(learning_rate = learning_rate, name = optimizer_name)() #lr_scheduler, name = optimizer_name)()
@@ -61,7 +61,7 @@ class hyperparameter_tuner:
 
 # Script
 if __name__ == "__main__":
-    base_model = mf.load_model_and_weights(model_path="models/keras/Model9v3Words", weight_path="models/keras/Model9v3Words/Model9v3Words_weights.keras")
+    #base_model = mf.load_model_and_weights(model_path="models/keras/Model9v3Words", weight_path="models/keras/Model9v3Words/Model9v3Words_weights.keras")
     #base_model = models.build_model9v3(IMAGE_WIDTH, IMAGE_HEIGHT, len(tk.char_to_num.get_vocabulary()), LEARNING_RATE)
     tuner = hyperparameter_tuner()
-    tuner(base_model=base_model)
+    tuner()

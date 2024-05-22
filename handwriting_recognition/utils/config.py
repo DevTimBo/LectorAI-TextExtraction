@@ -5,7 +5,7 @@ IMAGE_WIDTH = 1024
 IMAGE_HEIGHT = 128
 
 # Pay attention to HYPERPARAMETER_TUNE for file location
-HYPERPARAMETER_TUNE = False
+HYPERPARAMETER_TUNE = True
 
 # Directory Parameter
 MODEL_DIR_NAME = "models/keras" if HYPERPARAMETER_TUNE is False else "models/hyperparameter_tuning"
@@ -22,6 +22,6 @@ PATIENCE = 5
 TRANSFER_LEARNING = True
 
 # Data Parameter
-IAM_DATASET_PATH = "dataset/iam_dataset"
+IAM_DATASET_PATH = "dataset/iam_dataset/"
 WHAT_DATASET = "lines"
 TRANSFER_DATASET_PATH = "dataset/transfer_dataset"

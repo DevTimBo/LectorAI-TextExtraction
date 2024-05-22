@@ -9,9 +9,12 @@ print("CUDA available:", torch.cuda.is_available())
 print("CUDA version:", torch.version.cuda)
 
 BATCH_SIZE = 16
-EPOCHS = 1
+EPOCHS = 100
 
-model_list = ["microsoft/trocr-small-stage1", "microsoft/trocr-base-stage1"]
+model_list_small = ["microsoft/trocr-small-printed", "microsoft/trocr-small-handwritten", "microsoft/trocr-small-stage1"]
+model_list_large = ["microsoft/trocr-large-printed", "microsoft/trocr-large-handwritten", "microsoft/trocr-large-stage1"]
+# change accordingly
+model_list = model_list_large
 base_path = "models/trocr/"
 dataset_path = 'dataset/transfer_dataset/'
 train_dataset_path = os.path.join(dataset_path, 'train')
@@ -45,9 +48,10 @@ for model_name in model_list:
         save_strategy="epoch",
         per_device_train_batch_size=BATCH_SIZE,
         per_device_eval_batch_size=BATCH_SIZE,
-        fp16=False, 
+        fp16=False,
+        logging_dir="logs",
         output_dir=save_model_name,
-        logging_steps=2,
+        logging_steps=200,
         load_best_model_at_end=True,
         metric_for_best_model="levenshtein",  
         greater_is_better=False  
@@ -60,11 +64,11 @@ for model_name in model_list:
         pred_str = processor.batch_decode(pred_ids, skip_special_tokens=True)
         labels_ids[labels_ids == -100] = processor.tokenizer.pad_token_id
         label_str = processor.batch_decode(labels_ids, skip_special_tokens=True)
-        sum_leven = 0
-        for label, pred in zip(label_str, pred_str):
-            sum_leven += distance(label, pred)
+        sum_leven = sum(
+            distance(label, pred) for label, pred in zip(label_str, pred_str)
+        )
         levenshtein = sum_leven / len(label_str)
-    
+
         return {"levenshtein": levenshtein}
     
     trainer = Seq2SeqTrainer(
