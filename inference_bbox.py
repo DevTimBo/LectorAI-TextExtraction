@@ -1,6 +1,6 @@
-from ultralytics import YOLO
 
-MODEL_WEIGHT_PATH = "try/sub/best.pt"
+
+MODEL_WEIGHT_PATH = "TOP_AMAZON_WORKER/mask_rcnn/"# -----.pt"
 MODEL_IMAGE_WIDTH = 1024
 MODEL_IMAGE_HEIGHT = 128
 
@@ -9,7 +9,7 @@ class bbox_model:
         self.model = self.load_model_and_weights(MODEL_WEIGHT_PATH)   
 
     def load_model_and_weights(self, model_weight_path: str):
-        return YOLO(model_weight_path)
+        return print("MASKED SINGER")
     
     def inference(self, image):
         results = self.model(image)

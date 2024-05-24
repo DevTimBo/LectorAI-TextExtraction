@@ -7,8 +7,8 @@ import tensorflow as tf
 import keras
 import handwriting_recognition.utils.preprocess as preprocess
 
-MODEL_PATH = "models/hyperparameter_tuning/MAFIA_BOSS_LINES_NEW_DS_adam"
-MODEL_WEIGHT_PATH = "models/hyperparameter_tuning/MAFIA_BOSS_LINES_NEW_DS_adam/MAFIA_BOSS_LINES_NEW_DS_adam_weights.keras"
+MODEL_PATH = "MAFIA_BOSS_LINES_NEW_DS_adam"
+MODEL_WEIGHT_PATH = "MAFIA_BOSS_LINES_NEW_DS_adam/MAFIA_BOSS_LINES_NEW_DS_adam_weights.keras"
 MODEL_CHARS_PATH = os.path.join(MODEL_PATH, "handwriting_chars.pkl")
 MODEL_IMAGE_WIDTH = 1024
 MODEL_IMAGE_HEIGHT = 128
