@@ -3,6 +3,7 @@ env
 venv
 myvenv
 myenv
+en
 detected
 test_results
 temp_images
