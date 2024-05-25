@@ -13,7 +13,7 @@ class optimizers:
                return keras.optimizers.Adamax(learning_rate=self.learning_rate)
           elif self.name == "nadam":
                return keras.optimizers.Nadam(learning_rate=self.learning_rate)
-          elif self.name == "ftrl":
-               return keras.optimizers.Ftrl(learning_rate=self.learning_rate)
+          elif self.name == "adamw":
+               return keras.optimizers.AdamW(learning_rate=self.learning_rate)
           elif self.name == "adagrad":
                return keras.optimizers.Adagrad(learning_rate=self.learning_rate)

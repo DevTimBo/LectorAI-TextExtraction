@@ -7,6 +7,7 @@ import tensorflow as tf
 import matplotlib.pyplot as plt
 from matplotlib.ticker import StrMethodFormatter
 import numpy as np
+from Levenshtein import distance
 import os
 import re
 import pickle
@@ -40,12 +41,12 @@ def load_model_and_weights(model_path: str, weight_path: str):
 
 
 def extract_model_and_weights(model_path: str, weight_path: str):
-    print("Loading pre-trained model and weights...")
-    model = tf.keras.models.load_model(model_path)
-    model_weight_path = weight_path
-    model.load_weights(model_weight_path)
-    print("Model and weights loaded successfully.")
-    return model
+        print("Loading pre-trained model and weights...")
+        model = tf.keras.models.load_model(model_path)
+        model.load_weights(weight_path)
+        print("Model and weights loaded successfully.")
+        print(weight_path)
+        return model
 
 
 def save_model(model, model_name: str = MODEL_NAME, model_directory: str = MODEL_DIR_NAME):
@@ -78,7 +79,7 @@ def save_train_history(
     total_duration: int = 0,
     add_name: str = None,
 ):
-    """Author: Alexej Kravtschenko (main) and Tim Harmling (wrote)
+        """Author: Alexej Kravtschenko (main) and Tim Harmling (wrote)
 
     Creates a new plot name based on existing names.
     This function generates a new plot name by appending a version number to the given model name.
@@ -92,33 +93,32 @@ def save_train_history(
     Returns:
         str: The new plot name.
     """
-    if not os.path.exists(test_result_directory):
-        create_dir(test_result_directory)
+        if not os.path.exists(test_result_directory):
+            create_dir(test_result_directory)
 
-    files_with_model_name = [
-        file for file in os.listdir(test_result_directory) if model_name in file
-    ]
-    metrics = history.history
+        files_with_model_name = [
+            file for file in os.listdir(test_result_directory) if model_name in file
+        ]
+        metrics = history.history
 
-    NAME = "{name}_{epoch}E_{height}H_{width}W_{loss}L_{val_loss}VL_{time}s".format(
-        name=model_name,
-        epoch=history.epoch[-1],
-        height=IMAGE_HEIGHT,
-        width=IMAGE_WIDTH,
-        loss=round(metrics["loss"][-1], 2),
-        val_loss=round(metrics["val_loss"][-1], 2),
-        time=round(total_duration),
-    )
+        NAME = "{name}_{epoch}E_{height}H_{width}W_{loss}L_{val_loss}VL_{time}s".format(
+            name=model_name,
+            epoch=history.epoch[-1],
+            height=IMAGE_HEIGHT,
+            width=IMAGE_WIDTH,
+            loss=round(metrics["loss"][-1], 2),
+            val_loss=round(min(metrics["val_loss"]), 2),
+            time=round(total_duration),
+        )
 
-    if add_name is not None:
-        NAME = f"{NAME}_{add_name}"
+        if add_name is not None:
+            NAME = f"{NAME}_{add_name}"
 
-    if files_with_model_name:
-        new_name = create_new_plot_name(model_name, files_with_model_name, NAME)
-        plot_history(history, new_name, test_result_directory, True)
-        plot_evaluation(NAME, test_result_directory, True, val_ds, prediction_model)
-    else:
-        plot_history(history, NAME, test_result_directory, True)
+        if files_with_model_name:
+                new_name = create_new_plot_name(model_name, files_with_model_name, NAME)
+                plot_history(history, new_name, test_result_directory, True)
+        else:
+                plot_history(history, NAME, test_result_directory, True)
         plot_evaluation(NAME, test_result_directory, True, val_ds, prediction_model)
 
 
@@ -203,3 +203,25 @@ def decode_batch_predictions(pred):
         res = tf.strings.reduce_join(tokenizer.num_to_char(res)).numpy().decode("utf-8")
         output_text.append(res)
     return output_text
+
+def levenshtein(val_dataset_path, handwriting_model):
+    val_df_list = os.listdir(val_dataset_path)
+    val_df_jpg_list = [val_df_list[i] for i in range(len(val_df_list)) if val_df_list[i].endswith('.jpg')]
+    val_df_jpg_list = [os.path.join(val_dataset_path, val_df_jpg_list[i]) for i in range(len(val_df_jpg_list)) ]
+
+    scores = []
+    pred_real = []
+    for image_path in val_df_jpg_list:
+        image = tf.io.read_file(image_path)
+        image = tf.image.decode_jpeg(image, 1)
+        prediction = handwriting_model.inference(image)
+        with open(image_path.replace('.jpg', '.txt'), 'r') as f:
+            label = f.read().replace("|", " ")
+        scores.append(distance(prediction, label))
+        pred_real.append((prediction, label))
+        print(f'Prediction: {prediction} Label: {label} Distance: {scores[-1]}')
+
+    print(f'Mean distance: {round(sum(scores) / len(scores),2)}')
+    print("(Prediction,Real)")
+    for pred_r in pred_real:
+        print(pred_r)

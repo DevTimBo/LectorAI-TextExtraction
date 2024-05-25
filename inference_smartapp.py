@@ -7,8 +7,8 @@ import tensorflow as tf
 import keras
 import handwriting_recognition.utils.preprocess as preprocess
 
-MODEL_PATH = "handwriting_recognition/models/keras/Model9v3_Words_Transfer"
-MODEL_WEIGHT_PATH = "handwriting_recognition/models/keras/Model9v3_Words_Transfer/Model9v3_Words_Transfer_weights.keras"
+MODEL_PATH = "MAFIA_BOSS_LINES_NEW_DS_adam"
+MODEL_WEIGHT_PATH = "MAFIA_BOSS_LINES_NEW_DS_adam/MAFIA_BOSS_LINES_NEW_DS_adam_weights.keras"
 MODEL_CHARS_PATH = os.path.join(MODEL_PATH, "handwriting_chars.pkl")
 MODEL_IMAGE_WIDTH = 1024
 MODEL_IMAGE_HEIGHT = 128
@@ -68,8 +68,7 @@ class handwriting_model():
         preds = prediction_model.predict(tf.expand_dims(image, axis=0))
         pred_texts = self.decode_single_prediction(preds)
 
-        selected_pred_text = pred_texts.replace("|"," ")
-        return selected_pred_text
+        return pred_texts.replace("|"," ")
 
 handwriting_model = handwriting_model()
 
