@@ -1,4 +1,5 @@
 from flask import jsonify
+import tensorflow as tf
 import os
 from inference_smartapp import handwriting_model
 from inference_bbox import bbox_model
@@ -29,7 +30,6 @@ def crop(x1, y1, x2, y2, image, crop_left_percent, crop_bottom_percent):
     crop_left = int(crop_left_percent * (x2 - x1))
     crop_bottom = int(crop_bottom_percent * (y2 - y1))
     cropped_image = image[y1 + crop_bottom:y2, x1 + crop_left:x2]
-    #print(cropped_image.shape)
     if cropped_image.size == 0:
         print("Cropped image is empty")
         return None
@@ -41,32 +41,31 @@ class pipeline:
         self.handwriting_model = handwriting_model
 
     def _predict_bounding_boxes(self, image):
-        return self.bbox_model.inference(image)
+        return self.bbox_model(image)
 
     def _predict_handwriting(self, image):
         return self.handwriting_model.inference(image)
 
     def __call__(self, directory, filename):
-        image = cv2.imread(os.path.join(directory, filename))
-        boxes, confidences, classes = self._predict_bounding_boxes(image)
+        image = tf.io.read_file(os.path.join(directory, filename))
+        image = tf.image.decode_png(image, channels=3)
+        results = self._predict_bounding_boxes(image)
+        classes, boxes, confidences = zip(*results)
 
         cropped_images = []
-        for box, map_class in zip(boxes, classes):
-            box = box.cpu()
-            x, y, w, h = np.array(box)
-            x1, y1, x2, y2 = int(x - w/2), int(y - h/2), int(x + w/2), int(y + h/2)
-
+        image_np = image.numpy()
+        image_np = cv2.cvtColor(image_np, cv2.COLOR_RGB2BGR)
+        for box, sub_class in zip(*(boxes, classes)):
+            x_min, y_min, x_max, y_max = box
             crop_left_percent = 0
             crop_bottom_percent = 0
-            if map_class not in cropping_params:
+            if sub_class not in cropping_params:
                 continue
-
-            #print(map_class, cropping_params[map_class])
-            params = cropping_params[map_class]
+            params = cropping_params[sub_class]
             crop_left_percent = float(params["left"])
             crop_bottom_percent = float(params["bottom"])
-            imgCropped = crop(x1, y1, x2, y2, image, crop_left_percent, crop_bottom_percent)
-            cropped_images.append(imgCropped)
+            cropped_image = crop(x_min, y_min, x_max, y_max, image_np, crop_left_percent, crop_bottom_percent)
+            cropped_images.append(cropped_image)
 
         text_predictions = []
         for i, img in enumerate(cropped_images):
@@ -78,8 +77,9 @@ class pipeline:
 
         predictions = []
         for i, prediction in enumerate(text_predictions):
-            box = boxes[i].cpu()
-            x, y, w, h = np.array(box)
-            x1, y1, x2, y2 = int(x - w/2), int(y - h/2), int(x + w/2), int(y + h/2)
-            predictions.append({"class": classes[i], "prediction": prediction, "confidence": float(confidences[i].cpu()), "box": [x1, y1, x2, y2]})
-        return jsonify({"predictions":predictions})
+            x1, y1, x2, y2 = boxes[i]
+            predictions.append({"class": classes[i], "prediction": prediction, "confidence": float(confidences[i]), "box": [x1, y1, x2, y2]})
+        return jsonify({"predictions":predictions}) # if testing here change to print instead
+
+pipeline = pipeline()
+pipeline("tempimages_api", "beispiel_form.jpg")
