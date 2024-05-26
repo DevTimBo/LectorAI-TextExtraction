@@ -60,7 +60,7 @@ class pipeline:
             x_min, y_min, x_max, y_max = box
             cv2.rectangle(full_img_np, (x_min, y_min), (x_max, y_max), (0, 255, 0), 2)
             cv2.putText(full_img_np, f'{label}: {score:.2f}', (x_min, y_min - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (255, 255, 255), 2)
-        cv2.imwrite(f"tempimages_api/document_with_bounding_boxes.png", full_img_np)
+        cv2.imwrite("tempimages_api/document_with_bounding_boxes.png", full_img_np)
 
         cropped_images = []
         image_np = image.numpy()
