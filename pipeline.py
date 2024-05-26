@@ -96,5 +96,7 @@ class pipeline:
         # print(predictions)
         return jsonify({"predictions":predictions}) 
 
+print("Pipeline loaded successfully.")
+
 #pipeline = pipeline()
 #pipeline("tempimages_api", "beispiel_form.jpg")
