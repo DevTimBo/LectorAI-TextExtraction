@@ -1,5 +1,4 @@
 from flask import Flask, request, jsonify
-import uuid
 import os
 from pipeline import pipeline
 import base64

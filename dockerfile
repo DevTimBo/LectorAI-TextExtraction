@@ -12,8 +12,8 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 # Install Python dependencies
-RUN pip install --upgrade pip
-RUN pip install flask tensorflow==2.15 gunicorn opencv-python ultralytics tensorflow-probability==0.23.0 dill
+RUN pip install --upgrade pip && \
+    pip install flask tensorflow==2.15 gunicorn opencv-python numpy onnx onnxsim onnxruntime onnxruntime-gpu tensorflow-probability==0.23.0 pillow
 
 # Make port 80 available to the world outside this container
 EXPOSE 80

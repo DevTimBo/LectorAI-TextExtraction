@@ -96,5 +96,5 @@ class pipeline:
         # print(predictions)
         return jsonify({"predictions":predictions}) 
 
-pipeline = pipeline()
-pipeline("tempimages_api", "beispiel_form.jpg")
+#pipeline = pipeline()
+#pipeline("tempimages_api", "beispiel_form.jpg")

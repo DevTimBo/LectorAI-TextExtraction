@@ -30,7 +30,7 @@ class hyperparameter_tuner:
             for scheduler_name in self.lrs_list:
                 for learning_rate in self.learning_rate_list:
                     # Model Name to be saved and for tensorboard/results plots
-                    model_name = f"MAFIA_BOSS_LINES_NEW_DS_{optimizer_name}"#f"{MODEL_NAME}_{optimizer_name}_{scheduler_name}new_dataset_transfer_{learning_rate}"
+                    model_name = f"MAFIA_BOSS_LINES_NEW_DS_{optimizer_name}_measure_time"
                     callbacks = [tf.keras.callbacks.EarlyStopping(monitor="val_loss", patience=PATIENCE, restore_best_weights=True),
                     tf.keras.callbacks.TensorBoard(log_dir=f"{MODEL_DIR_NAME}/logs/{model_name}")]
                     

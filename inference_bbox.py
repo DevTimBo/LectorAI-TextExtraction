@@ -2,8 +2,6 @@ import onnxruntime as ort
 import tensorflow as tf
 import json 
 import numpy as np
-import matplotlib.pyplot as plt
-import cv2
 
 from pathlib import Path
 MODEL_PATH = "TOP_AMAZON_WORKER/mask_rcnn"
@@ -18,10 +16,9 @@ class bbox_model:
         checkpoint_dir_obj = Path(MODEL_PATH)
         colormap_path = list(checkpoint_dir_obj.glob('*colormap.json'))[0]
         with open(colormap_path, 'r') as file:
-            colormap_json = json.load(file)    
+            colormap_json = json.load(file)
         colormap_dict = {item['label']: item['color'] for item in colormap_json['items']}
-        class_names = list(colormap_dict.keys())
-        return class_names
+        return list(colormap_dict.keys())
     
     def inference(self, test_img, onnx_file_path, class_names, threshold=0.8, img_size=(1024, 1024)):
         original_height, original_width = test_img.shape[:2]
@@ -51,7 +48,6 @@ class bbox_model:
         if LOGGING is True:
             for label, box, score in results:
                 print(f"Label: {label}, Box: {box}, Confidence: {score}")
-                # maybe save? idk
         return results
 
     def __call__(self, image):
