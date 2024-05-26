@@ -52,7 +52,6 @@ class pipeline:
         print("Image loaded successfully.")
         results = self._predict_bounding_boxes(image)
         print("Bounding boxes predicted successfully.")
-        classes, boxes, confidences = zip(*results)
 
         full_img_np = image.numpy()
         full_img_np = cv2.cvtColor(full_img_np, cv2.COLOR_RGB2BGR)
@@ -65,35 +64,35 @@ class pipeline:
         cropped_images = []
         image_np = image.numpy()
         image_np = cv2.cvtColor(image_np, cv2.COLOR_RGB2BGR)
-        for box, sub_class in zip(*(boxes, classes)):
+        for label, box, score in results:
             x_min, y_min, x_max, y_max = box
             crop_left_percent = 0
             crop_bottom_percent = 0
-            if sub_class not in cropping_params:
+            if label not in cropping_params:
                 continue
-            params = cropping_params[sub_class]
+            params = cropping_params[label]
             crop_left_percent = float(params["left"])
             crop_bottom_percent = float(params["bottom"])
             cropped_image = crop(x_min, y_min, x_max, y_max, image_np, crop_left_percent, crop_bottom_percent)
-            cropped_images.append(cropped_image)
+            cropped_images.append((label, cropped_image, score, box))
         print("Cropped images successfully.")
         
         text_predictions = []
-        for i, img in enumerate(cropped_images):
+        for label, img, score, box  in cropped_images:
             gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
             gray_with_dim = np.expand_dims(gray, axis=2)
             prediction = handwriting_model.inference(gray_with_dim)
-            text_predictions.append(prediction)
-            cv2.imwrite(f"tempimages_api/cropped_{i}.png", img)
+            text_predictions.append((label, prediction, score, box))
+            cv2.imwrite(f"tempimages_api/{label}.png", img)
             print("Text predicted successfully")
         
         predictions = []
-        for i, prediction in enumerate(text_predictions):
-            x1, y1, x2, y2 = boxes[i]
-            predictions.append({"class": classes[i], "prediction": prediction, "confidence": float(confidences[i]), "box": [x1, y1, x2, y2]})
+        for label, prediction, score, box in text_predictions:
+            x1, y1, x2, y2 = box
+            predictions.append({"class": label, "prediction": prediction, "confidence": float(score), "box": [x1, y1, x2, y2]})
         print("Returning JSON response.")
         # if testing with this script change to print instead
-        # print(predictions)
+        #print(predictions)
         return jsonify({"predictions":predictions}) 
 
 print("Pipeline loaded successfully.")
