@@ -27,7 +27,7 @@ class bbox_model:
         input_img = tf.transpose(input_img, perm=[0, 3, 1, 2])
         input_img = np.array(input_img, np.float32) / 255.0
         
-        session = ort.InferenceSession(onnx_file_path, providers=['GPUExecutionProvider', 'CPUExecutionProvider'])
+        session = ort.InferenceSession(onnx_file_path, providers=['CUDAExecutionProvider', 'CPUExecutionProvider'])
         model_output = session.run(None, {"input": input_img})
 
         scores_mask = model_output[2] > threshold
@@ -57,6 +57,6 @@ class bbox_model:
 bbox_model = bbox_model()
 
 if __name__ == "__main__":
-    image = tf.io.read_file("data/Jason_Ad_2.jpg")
+    image = tf.io.read_file("dataset/images/AD_033.jpeg")
     image = tf.image.decode_png(image, channels=3)
     model = bbox_model(image)

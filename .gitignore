@@ -11,8 +11,7 @@ tempimages
 # checkpoints
 */checkpoint*/
 #/dataset/iam_dataset
-
-# Images
+TOP_AMAZON_WORKER
 *.png
 *.jpg
 *.jpeg

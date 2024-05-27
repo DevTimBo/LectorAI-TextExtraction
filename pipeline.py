@@ -45,14 +45,18 @@ class pipeline:
 
     def _predict_handwriting(self, image):
         return self.handwriting_model.inference(image)
-
+    def _predict_handwriting_batch(self, images):
+            return self.handwriting_model.inference_batch(images)
+    
     def __call__(self, directory, filename):
         image = tf.io.read_file(os.path.join(directory, filename))
         image = tf.image.decode_png(image, channels=3)
         print("Image loaded successfully.")
+        import time
+        start = time.time()
         results = self._predict_bounding_boxes(image)
+        print("Bounding boxes predicted in", time.time() - start, "seconds.")
         print("Bounding boxes predicted successfully.")
-        classes, boxes, confidences = zip(*results)
 
         full_img_np = image.numpy()
         full_img_np = cv2.cvtColor(full_img_np, cv2.COLOR_RGB2BGR)
@@ -65,36 +69,33 @@ class pipeline:
         cropped_images = []
         image_np = image.numpy()
         image_np = cv2.cvtColor(image_np, cv2.COLOR_RGB2BGR)
-        for box, sub_class in zip(*(boxes, classes)):
+        for label, box, score in results:
             x_min, y_min, x_max, y_max = box
             crop_left_percent = 0
             crop_bottom_percent = 0
-            if sub_class not in cropping_params:
+            if label not in cropping_params:
                 continue
-            params = cropping_params[sub_class]
+            params = cropping_params[label]
             crop_left_percent = float(params["left"])
             crop_bottom_percent = float(params["bottom"])
             cropped_image = crop(x_min, y_min, x_max, y_max, image_np, crop_left_percent, crop_bottom_percent)
-            cropped_images.append(cropped_image)
+            gray = cv2.cvtColor(cropped_image, cv2.COLOR_BGR2GRAY)
+            gray_with_dim = np.expand_dims(gray, axis=2)
+            cropped_images.append((label, gray_with_dim, score, box))
         print("Cropped images successfully.")
         
-        text_predictions = []
-        for i, img in enumerate(cropped_images):
-            gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-            gray_with_dim = np.expand_dims(gray, axis=2)
-            prediction = handwriting_model.inference(gray_with_dim)
-            text_predictions.append(prediction)
-            cv2.imwrite(f"tempimages_api/cropped_{i}.png", img)
-            print("Text predicted successfully")
-        
+        text_predictions = self._predict_handwriting_batch([image for label, image, score, box in cropped_images])
+
         predictions = []
         for i, prediction in enumerate(text_predictions):
-            x1, y1, x2, y2 = boxes[i]
-            predictions.append({"class": classes[i], "prediction": prediction, "confidence": float(confidences[i]), "box": [x1, y1, x2, y2]})
+            x1, y1, x2, y2 = cropped_images[i][3]
+            predictions.append({"class": cropped_images[i][0], "prediction": prediction, "confidence": float(cropped_images[i][2]), "box": [x1, y1, x2, y2]})
         print("Returning JSON response.")
         # if testing with this script change to print instead
-        # print(predictions)
+        #print(predictions)
         return jsonify({"predictions":predictions}) 
+
+print("Pipeline loaded successfully.")
 
 #pipeline = pipeline()
 #pipeline("tempimages_api", "beispiel_form.jpg")

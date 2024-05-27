@@ -1,4 +1,4 @@
-FROM python:3.10.14-bullseye
+FROM tensorflow/tensorflow:2.15.0-gpu
 
 # Set the working directory in the container
 WORKDIR /app
@@ -13,7 +13,7 @@ RUN apt-get update && apt-get install -y \
 
 # Install Python dependencies
 RUN pip install --upgrade pip && \
-    pip install flask tensorflow==2.15 gunicorn opencv-python numpy onnx onnxsim onnxruntime onnxruntime-gpu tensorflow-probability==0.23.0 pillow
+    pip install --ignore-installed --force flask gunicorn opencv-python numpy onnx onnxsim onnxruntime onnxruntime-gpu tensorflow-probability==0.23.0 pillow
 
 # Make port 80 available to the world outside this container
 EXPOSE 80
