@@ -40,5 +40,6 @@ def process_image():
         return jsonify({'message': str(e)}), 500
     return pipeline()(directory, 'uploaded_image.jpg')
 
+print("Pipeline loaded successfully.")
 if __name__ == '__main__':
     app.run()

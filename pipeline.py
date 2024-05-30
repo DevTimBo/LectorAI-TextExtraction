@@ -45,12 +45,17 @@ class pipeline:
 
     def _predict_handwriting(self, image):
         return self.handwriting_model.inference(image)
-
+    def _predict_handwriting_batch(self, images):
+            return self.handwriting_model.inference_batch(images)
+    
     def __call__(self, directory, filename):
         image = tf.io.read_file(os.path.join(directory, filename))
         image = tf.image.decode_png(image, channels=3)
         print("Image loaded successfully.")
+        import time
+        start = time.time()
         results = self._predict_bounding_boxes(image)
+        print("Bounding boxes predicted in", time.time() - start, "seconds.")
         print("Bounding boxes predicted successfully.")
 
         full_img_np = image.numpy()
@@ -74,22 +79,17 @@ class pipeline:
             crop_left_percent = float(params["left"])
             crop_bottom_percent = float(params["bottom"])
             cropped_image = crop(x_min, y_min, x_max, y_max, image_np, crop_left_percent, crop_bottom_percent)
-            cropped_images.append((label, cropped_image, score, box))
+            gray = cv2.cvtColor(cropped_image, cv2.COLOR_BGR2GRAY)
+            gray_with_dim = np.expand_dims(gray, axis=2)
+            cropped_images.append((label, gray_with_dim, score, box))
         print("Cropped images successfully.")
         
-        text_predictions = []
-        for label, img, score, box  in cropped_images:
-            gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-            gray_with_dim = np.expand_dims(gray, axis=2)
-            prediction = handwriting_model.inference(gray_with_dim)
-            text_predictions.append((label, prediction, score, box))
-            cv2.imwrite(f"tempimages_api/{label}.png", img)
-            print("Text predicted successfully")
-        
+        text_predictions = self._predict_handwriting_batch([image for label, image, score, box in cropped_images])
+
         predictions = []
-        for label, prediction, score, box in text_predictions:
-            x1, y1, x2, y2 = box
-            predictions.append({"class": label, "prediction": prediction, "confidence": float(score), "box": [x1, y1, x2, y2]})
+        for i, prediction in enumerate(text_predictions):
+            x1, y1, x2, y2 = cropped_images[i][3]
+            predictions.append({"class": cropped_images[i][0], "prediction": prediction, "confidence": float(cropped_images[i][2]), "box": [x1, y1, x2, y2]})
         print("Returning JSON response.")
         # if testing with this script change to print instead
         #print(predictions)
