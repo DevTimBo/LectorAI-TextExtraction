@@ -22,7 +22,7 @@ def clear_directory():
     """
     for file in os.listdir(directory):
         os.remove(os.path.join(directory, file))
-        
+
 create_directory()
 clear_directory()
 
@@ -34,12 +34,11 @@ def process_image():
     image_data = data['image']
     try:
         image_decoded = base64.b64decode(image_data)
-        image = Image.open(BytesIO(image_decoded))
-        image.save(os.path.join(directory,'uploaded_image.jpg'), 'JPEG')
+        with open('uploaded_image.jpg', "wb") as img:
+            img.write(image_decoded)
     except Exception as e:
         return jsonify({'message': str(e)}), 500
     return pipeline()(directory, 'uploaded_image.jpg')
 
 if __name__ == '__main__':
     app.run()
-    
