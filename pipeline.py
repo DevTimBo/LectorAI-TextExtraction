@@ -5,6 +5,7 @@ from inference_smartapp import handwriting_model
 from inference_bbox import bbox_model
 import cv2 
 import numpy as np
+import time
 
 cropping_params = {
     "ad_erzieher_name":         {"left": 0.15, "bottom": 0},
@@ -52,11 +53,9 @@ class pipeline:
         image = tf.io.read_file(os.path.join(directory, filename))
         image = tf.image.decode_png(image, channels=3)
         print("Image loaded successfully.")
-        import time
         start = time.time()
         results = self._predict_bounding_boxes(image)
         print("Bounding boxes predicted in", time.time() - start, "seconds.")
-        print("Bounding boxes predicted successfully.")
 
         full_img_np = image.numpy()
         full_img_np = cv2.cvtColor(full_img_np, cv2.COLOR_RGB2BGR)
@@ -65,6 +64,12 @@ class pipeline:
             cv2.rectangle(full_img_np, (x_min, y_min), (x_max, y_max), (0, 255, 0), 2)
             cv2.putText(full_img_np, f'{label}: {score:.2f}', (x_min, y_min - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (255, 255, 255), 2)
         cv2.imwrite("tempimages_api/document_with_bounding_boxes.png", full_img_np)
+        print("Bounding boxes plotting done.")
+
+        if len(results) == 0:
+            print("Bounding Boxes not found.")
+            # replace jsonify with None if testing with this script and not in docker image
+            return jsonify({"predictions":[]})
 
         cropped_images = []
         image_np = image.numpy()
@@ -83,7 +88,7 @@ class pipeline:
             gray_with_dim = np.expand_dims(gray, axis=2)
             cropped_images.append((label, gray_with_dim, score, box))
         print("Cropped images successfully.")
-        
+
         text_predictions = self._predict_handwriting_batch([image for label, image, score, box in cropped_images])
 
         predictions = []
@@ -91,11 +96,12 @@ class pipeline:
             x1, y1, x2, y2 = cropped_images[i][3]
             predictions.append({"class": cropped_images[i][0], "prediction": prediction, "confidence": float(cropped_images[i][2]), "box": [x1, y1, x2, y2]})
         print("Returning JSON response.")
-        # if testing with this script change to print instead
+        # if testing with this script and not docker change to print instead
         #print(predictions)
         return jsonify({"predictions":predictions}) 
 
 print("Pipeline loaded successfully.")
 
 #pipeline = pipeline()
+#pipeline("tempimages_api", "beispiel_form_rotated.jpg")
 #pipeline("tempimages_api", "beispiel_form.jpg")
