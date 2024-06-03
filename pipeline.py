@@ -69,7 +69,7 @@ class pipeline:
         if len(results) == 0:
             print("Bounding Boxes not found.")
             # replace jsonify with None if testing with this script and not in docker image
-            return jsonify({"predictions":[]})
+            return jsonify({'message': "No Text Boxes Detected in the provided Image."}), 400
 
         cropped_images = []
         image_np = image.numpy()
