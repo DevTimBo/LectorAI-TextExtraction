@@ -100,5 +100,7 @@ class pipeline:
 print("Pipeline loaded successfully.")
 
 #pipeline = pipeline()
-#pipeline("tempimages_api", "beispiel_form_rotated.jpg")
-#pipeline("tempimages_api", "beispiel_form.jpg")
+#image = tf.io.read_file(os.path.join("tempimages_api", "beispiel_form_covered.jpg"))
+#image = tf.image.decode_png(image, channels=3)
+#pipeline(image)
+
