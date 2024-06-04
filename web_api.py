@@ -4,6 +4,7 @@ from pipeline import pipeline
 import base64
 from io import BytesIO
 from PIL import Image
+import tensorflow as tf
 
 app = Flask(__name__)
 
@@ -33,12 +34,22 @@ def process_image():
         return jsonify({'message': 'No image provided'}), 400
     image_data = data['image']
     try:
+        FILENAME = 'uploaded_image.jpg'
         image_decoded = base64.b64decode(image_data)
-        with open('uploaded_image.jpg', "wb") as img:
+        with open(os.path.join(directory, FILENAME), "wb") as img:
             img.write(image_decoded)
+
+        image = tf.io.read_file(os.path.join(directory, FILENAME))
+        image = tf.image.decode_png(image, channels=3)
+        print("Image loaded successfully.")
     except Exception as e:
         return jsonify({'message': str(e)}), 500
-    return pipeline()(directory, 'uploaded_image.jpg')
+    try:
+        response = pipeline()(image)
+        return response
+    except Exception as e:
+        return jsonify({'message': str(e)}), 500
+    
 
 print("Pipeline loaded successfully.")
 if __name__ == '__main__':

@@ -49,10 +49,7 @@ class pipeline:
     def _predict_handwriting_batch(self, images):
             return self.handwriting_model.inference_batch(images)
     
-    def __call__(self, directory, filename):
-        image = tf.io.read_file(os.path.join(directory, filename))
-        image = tf.image.decode_png(image, channels=3)
-        print("Image loaded successfully.")
+    def __call__(self, image):
         start = time.time()
         results = self._predict_bounding_boxes(image)
         print("Bounding boxes predicted in", time.time() - start, "seconds.")
@@ -69,7 +66,8 @@ class pipeline:
         if len(results) == 0:
             print("Bounding Boxes not found.")
             # replace jsonify with None if testing with this script and not in docker image
-            return jsonify({'message': "No Text Boxes Detected in the provided Image."}), 400
+            return jsonify({'message': "No Text Boxes Detected in the provided Image."}), 200
+
 
         cropped_images = []
         image_np = image.numpy()
@@ -88,7 +86,6 @@ class pipeline:
             gray_with_dim = np.expand_dims(gray, axis=2)
             cropped_images.append((label, gray_with_dim, score, box))
         print("Cropped images successfully.")
-
         text_predictions = self._predict_handwriting_batch([image for label, image, score, box in cropped_images])
 
         predictions = []
