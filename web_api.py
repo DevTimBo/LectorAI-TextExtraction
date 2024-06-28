@@ -33,6 +33,11 @@ def process_image():
     if data is None or 'image' not in data:
         return jsonify({'message': 'No image provided'}), 400
     image_data = data['image']
+    if 'debug' not in data:
+        debug = False
+    else:
+        debug = bool(data['debug'])
+        print("Debug mode activated.", debug)
     try:
         FILENAME = 'uploaded_image.jpg'
         image_decoded = base64.b64decode(image_data)
@@ -41,11 +46,13 @@ def process_image():
 
         image = tf.io.read_file(os.path.join(directory, FILENAME))
         image = tf.image.decode_png(image, channels=3)
+        # Testing with rotated metadata images
+        #image = tf.image.rot90(image, k=3)
         print("Image loaded successfully.")
     except Exception as e:
         return jsonify({'message': str(e)}), 500
     try:
-        response = pipeline()(image)
+        response = pipeline()(image, debug)
         return response
     except Exception as e:
         return jsonify({'message': str(e)}), 500

@@ -16,21 +16,21 @@ cropping_params = {
     "schueler_vorname":         {"left": 0.15, "bottom": 0},
     "schueler_klasse":          {"left": 0.125, "bottom": 0},
     "ad_neue_ad_str_haus_nr":   {"left": 0.275, "bottom": 0},
-    "ad_neue_ad_plz":           {"left": 0.25, "bottom": 0},
+    "ad_neue_ad_plz":           {"left": 0.15, "bottom": 0},
     "ad_neue_ad_stadt":         {"left": 0.15, "bottom": 0},
     "ad_schueler_datum":        {"left": 0.2, "bottom": 0},
-    "ag_auswahl_wahl_1":        {"left": 0.15, "bottom": 0},
-    "ag_auswahl_wahl_2":        {"left": 0.15, "bottom": 0},
-    "ag_auswahl_wahl_3":        {"left": 0.15, "bottom": 0},
-    "ag_schueler_datum":        {"left": 0.3, "bottom": 0},
-    "ad_schueler_unterschrift": {"left": 0.2, "bottom": 0}, 
-    "ag_schueler_unterschrift": {"left": 0.2, "bottom": 0}, 
+    "ag_auswahl_wahl_1":        {"left": 0.175, "bottom": 0},
+    "ag_auswahl_wahl_2":        {"left": 0.175, "bottom": 0},
+    "ag_auswahl_wahl_3":        {"left": 0.175, "bottom": 0},
+    "ag_schueler_datum":        {"left": 0.275, "bottom": 0},
+    "ad_schueler_unterschrift": {"left": 0.2, "bottom": 0.25}, 
+    "ag_schueler_unterschrift": {"left": 0.2, "bottom": 0.25}, 
 }
 
 def crop(x1, y1, x2, y2, image, crop_left_percent, crop_bottom_percent):
     crop_left = int(crop_left_percent * (x2 - x1))
     crop_bottom = int(crop_bottom_percent * (y2 - y1))
-    cropped_image = image[y1 + crop_bottom:y2, x1 + crop_left:x2]
+    cropped_image = image[y1:y2 - crop_bottom, x1 + crop_left:x2]
     if cropped_image.size == 0:
         print("Cropped image is empty")
         return None
@@ -49,18 +49,19 @@ class pipeline:
     def _predict_handwriting_batch(self, images):
             return self.handwriting_model.inference_batch(images)
     
-    def __call__(self, image):
+    def __call__(self, image, debug=False):
         start = time.time()
         results = self._predict_bounding_boxes(image)
         print("Bounding boxes predicted in", time.time() - start, "seconds.")
 
         full_img_np = image.numpy()
         full_img_np = cv2.cvtColor(full_img_np, cv2.COLOR_RGB2BGR)
-        for label, box, score in results:
-            x_min, y_min, x_max, y_max = box
-            cv2.rectangle(full_img_np, (x_min, y_min), (x_max, y_max), (0, 255, 0), 2)
-            cv2.putText(full_img_np, f'{label}: {score:.2f}', (x_min, y_min - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (255, 255, 255), 2)
-        cv2.imwrite("tempimages_api/document_with_bounding_boxes.png", full_img_np)
+        if debug:
+            for label, box, score in results:
+                x_min, y_min, x_max, y_max = box
+                cv2.rectangle(full_img_np, (x_min, y_min), (x_max, y_max), (0, 255, 0), 2)
+                cv2.putText(full_img_np, f'{label}: {score:.2f}', (x_min, y_min - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (255, 255, 255), 2)
+            cv2.imwrite("tempimages_api/document_with_bounding_boxes.png", full_img_np)
         print("Bounding boxes plotting done.")
 
         if len(results) == 0:
@@ -85,6 +86,8 @@ class pipeline:
             gray = cv2.cvtColor(cropped_image, cv2.COLOR_BGR2GRAY)
             gray_with_dim = np.expand_dims(gray, axis=2)
             cropped_images.append((label, gray_with_dim, score, box))
+            if debug:
+                cv2.imwrite(f"tempimages_api/{label}.png", gray)
         print("Cropped images successfully.")
         text_predictions = self._predict_handwriting_batch([image for label, image, score, box in cropped_images])
 
