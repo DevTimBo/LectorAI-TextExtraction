@@ -8,6 +8,8 @@ import numpy as np
 import time
 
 cropping_params = {
+    "ad":                       {"left": 0, "bottom": 0},
+    "ag":                       {"left": 0, "bottom": 0},
     "ad_erzieher_name":         {"left": 0.15, "bottom": 0},
     "ad_erzieher_vorname":      {"left": 0.15, "bottom": 0},
     "ad_erzieher_tel":          {"left": 0.2, "bottom": 0},
