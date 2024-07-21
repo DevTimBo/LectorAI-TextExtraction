@@ -1,3 +1,4 @@
+# Author Jason Pranata
 import tensorflow as tf
 
 #@tf.function

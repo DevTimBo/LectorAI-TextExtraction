@@ -1,3 +1,4 @@
+# Author Jason Pranata
 import keras
 import tensorflow as tf
 

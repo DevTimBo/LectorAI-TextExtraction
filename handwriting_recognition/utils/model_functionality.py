@@ -1,3 +1,5 @@
+# Author Tim Harmling & Jason Pranata
+
 import utils.load_transfer_data as load_transfer_data
 import utils.load_data as load_data
 import utils.tokenizer as tokenizer

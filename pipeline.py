@@ -1,3 +1,4 @@
+# Author Tim Harmling & Jason Pranata
 from flask import jsonify
 import tensorflow as tf
 import os

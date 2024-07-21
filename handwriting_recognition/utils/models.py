@@ -1,6 +1,6 @@
 """
 Author: Alexej Kravtschenko
-Co-Author: Tim Harmling
+Co-Authors: Tim Harmling, Jason Pranata
 
 Description: This file represents most of our tested models including the final model "build_model9v3". 
 Every model uses a layer for Connectionist Temporal Classification (CTC) in Keras.
