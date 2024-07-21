@@ -45,7 +45,7 @@ def main():
     opt = keras.optimizers.Adam(LEARNING_RATE)
     model.compile(optimizer=opt)
     prediction_model, iam_history2 = model_functionality.train_model(model, aug_train_ds, val_ds, EPOCHS, callbacks)
-    # Delete old datasets of memory
+    # Clear Dataset out of VRAM
     if TRANSFER_LEARNING:
         del aug_train_ds
         del val_ds

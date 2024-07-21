@@ -1,4 +1,5 @@
-# Author Jason Pranata
+# Author Jason Pranata & Tim Harmling
+
 
 import torch
 import os
