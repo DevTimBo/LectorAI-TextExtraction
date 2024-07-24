@@ -2,8 +2,6 @@ from flask import Flask, request, jsonify
 import os
 from pipeline import pipeline
 import base64
-from io import BytesIO
-from PIL import Image
 import tensorflow as tf
 
 app = Flask(__name__)
@@ -52,8 +50,7 @@ def process_image():
     except Exception as e:
         return jsonify({'message': str(e)}), 500
     try:
-        response = pipeline()(image, debug)
-        return response
+        return pipeline()(image, debug)
     except Exception as e:
         return jsonify({'message': str(e)}), 500
     

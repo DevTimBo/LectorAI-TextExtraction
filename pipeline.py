@@ -1,7 +1,5 @@
-# Author Tim Harmling & Jason Pranata
+# Authors: Tim Harmling & Jason Pranata
 from flask import jsonify
-import tensorflow as tf
-import os
 from inference_smartapp import handwriting_model
 from inference_bbox import bbox_model
 import cv2 

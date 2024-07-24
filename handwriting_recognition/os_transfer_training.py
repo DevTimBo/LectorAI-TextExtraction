@@ -1,5 +1,8 @@
-# Author Jason Pranata & Tim Harmling
+'''
+Authors: Jason Pranata & Tim Harmling
 
+training script to automatically train trocr model variants on the open source dataset.
+'''
 
 import torch
 import os
@@ -16,6 +19,7 @@ EPOCHS = 100
 
 model_list_small = ["microsoft/trocr-small-printed", "microsoft/trocr-small-handwritten", "microsoft/trocr-small-stage1"]
 model_list_large = ["microsoft/trocr-large-printed", "microsoft/trocr-large-handwritten", "microsoft/trocr-large-stage1"]
+
 # change accordingly
 model_list = model_list_large
 base_path = "models/trocr/"
@@ -88,5 +92,5 @@ for model_name in model_list:
     plot_history(trainer, save_model_name, show_plot=False)
     trainer.save_model(save_model_name)
     #try_model(save_model_name, processor, model_name, eval_dataset)
-    
+
 print("Training complete!")

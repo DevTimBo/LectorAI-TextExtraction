@@ -1,4 +1,4 @@
-# Author Tim Harmling & Jason Pranata
+# Authors: Tim Harmling & Jason Pranata
 
 import utils.load_transfer_data as load_transfer_data
 import utils.load_data as load_data

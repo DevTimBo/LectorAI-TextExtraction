@@ -1,7 +1,9 @@
-# Author Jason Pranata
+'''
+Author: Jason Pranata
 
-import utils.optimizers as opt
-import utils.learning_rate_scheduler as lrs
+training script to automatically train the given model(s) with different optimizers and learning rate schedulers.
+'''
+import utils.hyperparameters as params
 import utils.tokenizer as tk
 import utils.load_transfer_data as load_transfer_data
 import utils.load_data as load_data
@@ -15,6 +17,9 @@ import json
 import os
 
 class hyperparameter_tuner:
+    '''
+    
+    '''
     def __init__(self, initial_learning_rate: float = LEARNING_RATE):
         self.optimizers_list = ["adam", "adamw", "nadam", "adamax"]
         self.lrs_list = [""]#"cosine_decay", "cosine_decay_restarts", "exponential_decay", "inverse_time_decay", "polynomial_decay"]
@@ -28,10 +33,11 @@ class hyperparameter_tuner:
         x_val_img_paths, y_val_labels = load_transfer_data.get_validation_data()
         train_ds = tk.prepare_augmented_dataset(x_train_img_paths, y_train_labels, BATCH_SIZE)
         val_ds = tk.prepare_dataset(x_val_img_paths, y_val_labels, (IMAGE_WIDTH, IMAGE_HEIGHT), BATCH_SIZE)
+
         for optimizer_name in self.optimizers_list:
             for scheduler_name in self.lrs_list:
                 for learning_rate in self.learning_rate_list:
-                    # Model Name to be saved and for tensorboard/results plots
+                    # Model name to be saved and for tensorboard/results plots
                     model_name = f"MAFIA_BOSS_LINES_NEW_DS_{optimizer_name}_measure_time"
                     callbacks = [tf.keras.callbacks.EarlyStopping(monitor="val_loss", patience=PATIENCE, restore_best_weights=True),
                     tf.keras.callbacks.TensorBoard(log_dir=f"{MODEL_DIR_NAME}/logs/{model_name}")]
@@ -40,8 +46,8 @@ class hyperparameter_tuner:
                     model_path = f"{MODEL_DIR_NAME}/trained_with_lines_dataset/{MODEL_NAME}_{optimizer_name}_dataset_lines_0.001"
                     base_model = mf.load_model_and_weights(model_path, f"{model_path}/{MODEL_NAME}_{optimizer_name}_dataset_lines_0.001_weights.keras")
                     
-                    #lr_scheduler = lrs.lr_scheduler(initial_learning_rate=learning_rate, decay_steps=decay_steps, name = scheduler_name)()
-                    optimizer = opt.optimizers(learning_rate = learning_rate, name = optimizer_name)() #lr_scheduler, name = optimizer_name)()
+                    #lr_scheduler = params.lr_scheduler(initial_learning_rate=learning_rate, decay_steps=decay_steps, name = scheduler_name)()
+                    optimizer = params.optimizers(learning_rate = learning_rate, name = optimizer_name)() #lr_scheduler, name = optimizer_name)()
                     base_model.compile(optimizer=optimizer)
                     start_time = time.time()
                     prediction_model, history = mf.train_model(base_model, train_ds, val_ds, EPOCHS, callbacks)
