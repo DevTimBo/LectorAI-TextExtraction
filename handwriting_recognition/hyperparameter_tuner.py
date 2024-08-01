@@ -18,7 +18,12 @@ import os
 
 class hyperparameter_tuner:
     '''
+    Class to train the given model(s) with different optimizers and learning rate schedulers.
     
+    There is the option to use "different" base models/weights by automatically loading the pre-trained 
+    model and weights using the looped hyperparameters for the model/weights path.
+    
+    Why is this a class? Idk what i was thinking. I could have just made this a function/script.
     '''
     def __init__(self, initial_learning_rate: float = LEARNING_RATE):
         self.optimizers_list = ["adam", "adamw", "nadam", "adamax"]
@@ -42,12 +47,12 @@ class hyperparameter_tuner:
                     callbacks = [tf.keras.callbacks.EarlyStopping(monitor="val_loss", patience=PATIENCE, restore_best_weights=True),
                     tf.keras.callbacks.TensorBoard(log_dir=f"{MODEL_DIR_NAME}/logs/{model_name}")]
                     
-                    # Load Model if u want to use different pre-trained models
-                    model_path = f"{MODEL_DIR_NAME}/trained_with_lines_dataset/{MODEL_NAME}_{optimizer_name}_dataset_lines_0.001"
-                    base_model = mf.load_model_and_weights(model_path, f"{model_path}/{MODEL_NAME}_{optimizer_name}_dataset_lines_0.001_weights.keras")
+                    # Loads Models if u want to use different pre-trained models
+                    # model_path = f"{MODEL_DIR_NAME}/trained_with_lines_dataset/{MODEL_NAME}_{optimizer_name}_dataset_lines_0.001"
+                    # base_model = mf.load_model_and_weights(model_path, f"{model_path}/{MODEL_NAME}_{optimizer_name}_dataset_lines_0.001_weights.keras")
                     
-                    #lr_scheduler = params.lr_scheduler(initial_learning_rate=learning_rate, decay_steps=decay_steps, name = scheduler_name)()
-                    optimizer = params.optimizers(learning_rate = learning_rate, name = optimizer_name)() #lr_scheduler, name = optimizer_name)()
+                    #lr_scheduler = params.lr_schedulers(initial_learning_rate=learning_rate, decay_steps=decay_steps, name = scheduler_name)
+                    optimizer = params.optimizers(learning_rate = learning_rate, name = optimizer_name) #lr_scheduler, name = optimizer_name)
                     base_model.compile(optimizer=optimizer)
                     start_time = time.time()
                     prediction_model, history = mf.train_model(base_model, train_ds, val_ds, EPOCHS, callbacks)
@@ -59,7 +64,7 @@ class hyperparameter_tuner:
                     )
                     mf.save_train_history(prediction_model, history, val_ds, model_name=model_name, 
                                         test_result_directory=f"{MODEL_DIR_NAME}/{model_name}/results", total_duration=total_duration)
-        # Save and Rank results in JSON file
+        # Save and Rank results in a JSON file
         sorted_hyperparameters = sorted(best_hyperparameters.items(), key=lambda item: item[1])
         json_data = json.dumps(sorted_hyperparameters, indent=4)
         file_path = f"{MODEL_DIR_NAME}/hyperparameters.json"
